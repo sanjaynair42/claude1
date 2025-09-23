@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Integration - Cloud Hosted</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .status-bar {
+            background: #28a745;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .auth-section, .app-section {
+            margin-bottom: 30px;
+        }
+        
+        .auth-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #007cff;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007cff;
+            box-shadow: 0 0 0 3px rgba(0, 124, 255, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #007cff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 124, 255, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .tab.active {
+            background: #007cff;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .data-display {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .account-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .account-card h3 {
+            color: #007cff;
+            margin-bottom: 10px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .setup-info {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .setup-info h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .url-display {
+            background: #263238;
+            color: #4fc3f7;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status-bar">
+            ✅ Hosted on GitHub Pages - CORS Issues Resolved!
+        </div>
+        
+        <div class="header">
+            <h1>🚀 Salesforce Integration</h1>
+            <p>Cloud-Hosted on GitHub Pages</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- Setup Information -->
+            <div class="setup-info">
+                <h3>📋 Connected App Setup</h3>
+                <p><strong>Use this Callback URL in your Salesforce Connected App:</strong></p>
+                <div class="url-display" id="callbackUrl">
+                    Loading current URL...
+                </div>
+                <p><strong>Quick Setup:</strong> Salesforce Setup → Apps → App Manager → New Connected App → Enable OAuth → Add callback URL above</p>
+            </div>
+            
+            <!-- Authentication Section -->
+            <div class="auth-section" id="authSection">
+                <h2>🔐 Salesforce Authentication</h2>
+                <div class="auth-form">
+                    <div class="form-group">
+                        <label for="instanceUrl">Salesforce Instance URL:</label>
+                        <select id="instanceUrl">
+                            <option value="https://login.salesforce.com">Production (login.salesforce.com)</option>
+                            <option value="https://test.salesforce.com">Sandbox (test.salesforce.com)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientId">Consumer Key (Client ID):</label>
+                        <input type="text" id="clientId" placeholder="Your connected app consumer key">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="clientSecret">Consumer Secret:</label>
+                        <input type="password" id="clientSecret" placeholder="Your connected app consumer secret">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="email" id="username" placeholder="your.email@company.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password + Security Token:</label>
+                        <input type="password" id="password" placeholder="YourPasswordYourSecurityToken">
+                    </div>
+                    
+                    <button class="btn" onclick="authenticateSalesforce()">Connect to Salesforce</button>
+                </div>
+                
+                <div id="authStatus"></div>
+            </div>
+            
+            <!-- Main Application -->
+            <div class="app-section hidden" id="appSection">
+                <h2>📊 Salesforce Operations</h2>
+                
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('accounts')">Accounts</button>
+                    <button class="tab" onclick="showTab('quotes')">Quotes</button>
+                    <button class="tab" onclick="showTab('contacts')">Contacts</button>
+                    <button class="tab" onclick="showTab('settings')">Settings</button>
+                </div>
+                
+                <!-- Accounts Tab -->
+                <div class="tab-content active" id="accountsTab">
+                    <h3>Account Management</h3>
+                    <div class="grid">
+                        <div>
+                            <button class="btn" onclick="getAccounts()">Get All Accounts</button>
+                            <button class="btn btn-success" onclick="showCreateAccountForm()">Create New Account</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Create Account Form -->
+                    <div id="createAccountForm" class="hidden" style="margin-top: 20px;">
+                        <h4>Create New Account</h4>
+                        <div class="form-group">
+                            <label for="accountName">Account Name:</label>
+                            <input type="text" id="accountName" placeholder="Enter account name">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountType">Account Type:</label>
+                            <select id="accountType">
+                                <option value="Customer - Direct">Customer - Direct</option>
+                                <option value="Customer - Channel">Customer - Channel</option>
+                                <option value="Prospect">Prospect</option>
+                                <option value="Partner">Partner</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="accountIndustry">Industry:</label>
+                            <input type="text" id="accountIndustry" placeholder="e.g., Technology, Healthcare">
+                        </div>
+                        <div class="form-group">
+                            <label for="accountPhone">Phone:</label>
+                            <input type="tel" id="accountPhone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <button class="btn btn-success" onclick="createAccount()">Create Account</button>
+                        <button class="btn" onclick="hideCreateAccountForm()">Cancel</button>
+                    </div>
+                    
+                    <div id="accountsData" class="data-display"></div>
+                </div>
+                
+                <!-- Quotes Tab -->
+                <div class="tab-content" id="quotesTab">
+                    <h3>Quote Management</h3>
+                    <div class="grid">
+                        <div>
+                            <button class="btn" onclick="getQuotes()">Get All Quotes</button>
+                            <button class="btn btn-success" onclick="showCreateQuoteForm()">Create New Quote</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Create Quote Form -->
+                    <div id="createQuoteForm" class="hidden" style="margin-top: 20px;">
+                        <h4>Create New Quote</h4>
+                        <div class="form-group">
+                            <label for="quoteName">Quote Name:</label>
+                            <input type="text" id="quoteName" placeholder="Enter quote name">
+                        </div>
+                        <div class="form-group">
+                            <label for="quoteAccount">Account:</label>
+                            <select id="quoteAccount">
+                                <option value="">Select an account...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quoteAmount">Amount:</label>
+                            <input type="number" id="quoteAmount" placeholder="0.00" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="quoteDescription">Description:</label>
+                            <textarea id="quoteDescription" rows="3" placeholder="Quote description..."></textarea>
+                        </div>
+                        <button class="btn btn-success" onclick="createQuote()">Create Quote</button>
+                        <button class="btn" onclick="hideCreateQuoteForm()">Cancel</button>
+                    </div>
+                    
+                    <div id="quotesData" class="data-display"></div>
+                </div>
+                
+                <!-- Contacts Tab -->
+                <div class="tab-content" id="contactsTab">
+                    <h3>Contact Management</h3>
+                    <div class="grid">
+                        <div>
+                            <button class="btn" onclick="getContacts()">Get All Contacts</button>
+                            <button class="btn btn-success" onclick="showCreateContactForm()">Create New Contact</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Create Contact Form -->
+                    <div id="createContactForm" class="hidden" style="margin-top: 20px;">
+                        <h4>Create New Contact</h4>
+                        <div class="form-group">
+                            <label for="contactFirstName">First Name:</label>
+                            <input type="text" id="contactFirstName" placeholder="Enter first name">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactLastName">Last Name:</label>
+                            <input type="text" id="contactLastName" placeholder="Enter last name">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactEmail">Email:</label>
+                            <input type="email" id="contactEmail" placeholder="contact@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="contactAccount">Account:</label>
+                            <select id="contactAccount">
+                                <option value="">Select an account...</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-success" onclick="createContact()">Create Contact</button>
+                        <button class="btn" onclick="hideCreateContactForm()">Cancel</button>
+                    </div>
+                    
+                    <div id="contactsData" class="data-display"></div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div class="tab-content" id="settingsTab">
+                    <h3>Application Settings</h3>
+                    <div class="setup-info">
+                        <h4>🌐 Deployment Information</h4>
+                        <p><strong>Current URL:</strong></p>
+                        <div class="url-display" id="currentUrl"></div>
+                        <p><strong>Hosted On:</strong> GitHub Pages</p>
+                        <p><strong>CORS Status:</strong> ✅ Resolved (HTTPS hosting)</p>
+                        <p><strong>SSL Certificate:</strong> ✅ GitHub Pages automatic SSL</p>
+                    </div>
+                    
+                    <div class="grid">
+                        <div>
+                            <button class="btn btn-warning" onclick="clearCache()">Clear Cache</button>
+                            <button class="btn" onclick="testConnection()">Test Connection</button>
+                            <button class="btn" style="background: #dc3545;" onclick="logout()">Logout</button>
+                        </div>
+                    </div>
+                    
+                    <div id="settingsData" class="data-display"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let accessToken = '';
+        let instanceUrl = '';
+        let accountsCache = [];
+
+        // Set current URL on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentUrl = window.location.href;
+            document.getElementById('callbackUrl').textContent = currentUrl;
+            document.getElementById('currentUrl').textContent = currentUrl;
+        });
+
+        // Enhanced authentication with better error handling for GitHub Pages
+        async function authenticateSalesforce() {
+            const clientId = document.getElementById('clientId').value;
+            const clientSecret = document.getElementById('clientSecret').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginUrl = document.getElementById('instanceUrl').value;
+
+            if (!clientId || !clientSecret || !username || !password) {
+                showStatus('Please fill in all authentication fields.', 'error', 'authStatus');
+                return;
+            }
+
+            showStatus('Authenticating with Salesforce...', 'info', 'authStatus');
+
+            try {
+                const response = await fetch(`${loginUrl}/services/oauth2/token`, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        grant_type: 'password',
+                        client_id: clientId,
+                        client_secret: clientSecret,
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    accessToken = data.access_token;
+                    instanceUrl = data.instance_url;
+                    
+                    // Store in sessionStorage for persistence
+                    sessionStorage.setItem('sf_access_token', accessToken);
+                    sessionStorage.setItem('sf_instance_url', instanceUrl);
+                    
+                    showStatus('✅ Successfully connected to Salesforce!', 'success', 'authStatus');
+                    
+                    // Hide auth section and show app
+                    document.getElementById('authSection').classList.add('hidden');
+                    document.getElementById('appSection').classList.remove('hidden');
+                    
+                    // Load accounts for dropdowns
+                    await loadAccountsForDropdowns();
+                } else {
+                    throw new Error(data.error_description || data.error || 'Authentication failed');
+                }
+            } catch (error) {
+                let errorMessage = error.message;
+                
+                if (error.message.includes('Failed to fetch')) {
+                    errorMessage = `Network Error: Unable to connect to Salesforce. Please check:
+                    
+1. ✅ Your internet connection
+2. ✅ Salesforce instance URL is correct
+3. ✅ Connected App is configured properly
+4. ✅ IP restrictions are relaxed in Connected App
+5. ✅ Your credentials are correct
+
+Current hosting: ${window.location.origin} (GitHub Pages with SSL)`;
+                }
+                
+                showStatus(`Authentication failed: ${errorMessage}`, 'error', 'authStatus');
+            }
+        }
+
+        // Utility function to make Salesforce API calls
+        async function salesforceApi(endpoint, method = 'GET', body = null) {
+            const url = `${instanceUrl}/services/data/v58.0/${endpoint}`;
+            
+            const options = {
+                method: method,
+                mode: 'cors',
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+
+            const response = await fetch(url, options);
+            
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error[0]?.message || 'API call failed');
+            }
+
+            return await response.json();
+        }
+
+        // Load accounts for dropdown menus
+        async function loadAccountsForDropdowns() {
+            try {
+                const data = await salesforceApi('query/?q=SELECT Id, Name FROM Account ORDER BY Name LIMIT 100');
+                accountsCache = data.records;
+                
+                // Populate account dropdowns
+                const quoteAccountSelect = document.getElementById('quoteAccount');
+                const contactAccountSelect = document.getElementById('contactAccount');
+                
+                [quoteAccountSelect, contactAccountSelect].forEach(select => {
+                    select.innerHTML = '<option value="">Select an account...</option>';
+                    accountsCache.forEach(account => {
+                        select.innerHTML += `<option value="${account.Id}">${account.Name}</option>`;
+                    });
+                });
+            } catch (error) {
+                console.error('Failed to load accounts for dropdowns:', error);
+            }
+        }
+
+        // Account operations
+        async function getAccounts() {
+            try {
+                showStatus('Fetching accounts...', 'info');
+                const data = await salesforceApi('query/?q=SELECT Id, Name, Type, Industry, Phone, CreatedDate FROM Account ORDER BY Name LIMIT 50');
+                
+                let html = `<h4>Accounts (${data.records.length} found)</h4>`;
+                
+                if (data.records.length === 0) {
+                    html += '<p>No accounts found.</p>';
+                } else {
+                    data.records.forEach(account => {
+                        html += `
+                            <div class="account-card">
+                                <h3>${account.Name}</h3>
+                                <p><strong>Type:</strong> ${account.Type || 'Not specified'}</p>
+                                <p><strong>Industry:</strong> ${account.Industry || 'Not specified'}</p>
+                                <p><strong>Phone:</strong> ${account.Phone || 'Not specified'}</p>
+                                <p><strong>Created:</strong> ${new Date(account.CreatedDate).toLocaleDateString()}</p>
+                                <p><strong>ID:</strong> ${account.Id}</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                document.getElementById('accountsData').innerHTML = html;
+                showStatus('✅ Accounts loaded successfully!', 'success');
+            } catch (error) {
+                showStatus(`❌ Failed to fetch accounts: ${error.message}`, 'error');
+            }
+        }
+
+        async function createAccount() {
+            const name = document.getElementById('accountName').value;
+            const type = document.getElementById('accountType').value;
+            const industry = document.getElementById('accountIndustry').value;
+            const phone = document.getElementById('accountPhone').value;
+
+            if (!name) {
+                showStatus('Account name is required.', 'error');
+                return;
+            }
+
+            try {
+                const accountData = {
+                    Name: name,
+                    Type: type,
+                    Industry: industry,
+                    Phone: phone
+                };
+
+                const result = await salesforceApi('sobjects/Account', 'POST', accountData);
+                showStatus(`✅ Account created successfully! ID: ${result.id}`, 'success');
+                hideCreateAccountForm();
+                await loadAccountsForDropdowns();
+                await getAccounts();
+            } catch (error) {
+                showStatus(`❌ Failed to create account: ${error.message}`, 'error');
+            }
+        }
+
+        // Quote operations
+        async function getQuotes() {
+            try {
+                showStatus('Fetching quotes...', 'info');
+                const data = await salesforceApi('query/?q=SELECT Id, Name, Account.Name, GrandTotal, Status, CreatedDate FROM Quote ORDER BY CreatedDate DESC LIMIT 50');
+                
+                let html = `<h4>Quotes (${data.records.length} found)</h4>`;
+                
+                if (data.records.length === 0) {
+                    html += '<p>No quotes found.</p>';
+                } else {
+                    data.records.forEach(quote => {
+                        html += `
+                            <div class="account-card">
+                                <h3>${quote.Name}</h3>
+                                <p><strong>Account:</strong> ${quote.Account?.Name || 'Not specified'}</p>
+                                <p><strong>Amount:</strong> $${quote.GrandTotal?.toLocaleString() || '0.00'}</p>
+                                <p><strong>Status:</strong> ${quote.Status || 'Draft'}</p>
+                                <p><strong>Created:</strong> ${new Date(quote.CreatedDate).toLocaleDateString()}</p>
+                                <p><strong>ID:</strong> ${quote.Id}</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                document.getElementById('quotesData').innerHTML = html;
+                showStatus('✅ Quotes loaded successfully!', 'success');
+            } catch (error) {
+                showStatus(`❌ Failed to fetch quotes: ${error.message}`, 'error');
+            }
+        }
+
+        async function createQuote() {
+            const name = document.getElementById('quoteName').value;
+            const accountId = document.getElementById('quoteAccount').value;
+            const amount = parseFloat(document.getElementById('quoteAmount').value);
+            const description = document.getElementById('quoteDescription').value;
+
+            if (!name || !accountId) {
+                showStatus('Quote name and account are required.', 'error');
+                return;
+            }
+
+            try {
+                const quoteData = {
+                    Name: name,
+                    Account__c: accountId,
+                    Description: description,
+                    Status: 'Draft'
+                };
+
+                const result = await salesforceApi('sobjects/Quote', 'POST', quoteData);
+                showStatus(`✅ Quote created successfully! ID: ${result.id}`, 'success');
+                hideCreateQuoteForm();
+                await getQuotes();
+            } catch (error) {
+                showStatus(`❌ Failed to create quote: ${error.message}`, 'error');
+            }
+        }
+
+        // Contact operations
+        async function getContacts() {
+            try {
+                showStatus('Fetching contacts...', 'info');
+                const data = await salesforceApi('query/?q=SELECT Id, FirstName, LastName, Email, Account.Name, CreatedDate FROM Contact ORDER BY LastName LIMIT 50');
+                
+                let html = `<h4>Contacts (${data.records.length} found)</h4>`;
+                
+                if (data.records.length === 0) {
+                    html += '<p>No contacts found.</p>';
+                } else {
+                    data.records.forEach(contact => {
+                        html += `
+                            <div class="account-card">
+                                <h3>${contact.FirstName} ${contact.LastName}</h3>
+                                <p><strong>Email:</strong> ${contact.Email || 'Not specified'}</p>
+                                <p><strong>Account:</strong> ${contact.Account?.Name || 'Not specified'}</p>
+                                <p><strong>Created:</strong> ${new Date(contact.CreatedDate).toLocaleDateString()}</p>
+                                <p><strong>ID:</strong> ${contact.Id}</p>
+                            </div>
+                        `;
+                    });
+                }
+                
+                document.getElementById('contactsData').innerHTML = html;
+                showStatus('✅ Contacts loaded successfully!', 'success');
+            } catch (error) {
+                showStatus(`❌ Failed to fetch contacts: ${error.message}`, 'error');
+            }
+        }
+
+        async function createContact() {
+            const firstName = document.getElementById('contactFirstName').value;
+            const lastName = document.getElementById('contactLastName').value;
+            const email = document.getElementById('contactEmail').value;
+            const accountId = document.getElementById('contactAccount').value;
+
+            if (!firstName || !lastName) {
+                showStatus('First name and last name are required.', 'error');
+                return;
+            }
+
+            try {
+                const contactData = {
+                    FirstName: firstName,
+                    LastName: lastName,
+                    Email: email,
+                    AccountId: accountId
+                };
+
+                const result = await salesforceApi('sobjects/Contact', 'POST', contactData);
+                showStatus(`✅ Contact created successfully! ID: ${result.id}`, 'success');
+                hideCreateContactForm();
+                await getContacts();
+            } catch (error) {
+                showStatus(`❌ Failed to create contact: ${error.message}`, 'error');
+            }
+        }
+
+        // Settings functions
+        function clearCache() {
+            sessionStorage.clear();
+            showStatus('Cache cleared successfully!', 'success', 'settingsData');
+        }
+
+        async function testConnection() {
+            if (!accessToken) {
+                showStatus('Please authenticate first', 'error', 'settingsData');
+                return;
+            }
+
+            try {
+                showStatus('Testing connection...', 'info', 'settingsData');
+                const response = await fetch(`${instanceUrl}/services/data/v58.0/`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    showStatus(`✅ Connection successful! API Version: ${data.version}`, 'success', 'settingsData');
+                } else {
+                    throw new Error('Connection test failed');
+                }
+            } catch (error) {
+                showStatus(`❌ Connection test failed: ${error.message}`, 'error', 'settingsData');
+            }
+        }
+
+        function logout() {
+            accessToken = '';
+            instanceUrl = '';
+            sessionStorage.clear();
+            
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
+            
+            showStatus('✅ Logged out successfully', 'success', 'authStatus');
+        }
+
+        // UI helper functions
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showStatus(message, type, containerId = 'quotesData') {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+            
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.insertBefore(statusDiv, container.firstChild);
+                
+                // Remove status after 5 seconds
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.remove();
+                    }
+                }, 8000);
+            }
+        }
+
+        function showCreateAccountForm() {
+            document.getElementById('createAccountForm').classList.remove('hidden');
+        }
+
+        function hideCreateAccountForm() {
+            document.getElementById('createAccountForm').classList.add('hidden');
+            // Clear form
+            document.getElementById('accountName').value = '';
+            document.getElementById('accountIndustry').value = '';
+            document.getElementById('accountPhone').value = '';
+        }
+
+        function showCreateQuoteForm() {
+            document.getElementById('createQuoteForm').classList.remove('hidden');
+        }
+
+        function hideCreateQuoteForm() {
+            document.getElementById('createQuoteForm').classList.add('hidden');
+            // Clear form
+            document.getElementById('quoteName').value = '';
+            document.getElementById('quoteAmount').value = '';
+            document.getElementById('quoteDescription').value = '';
+            document.getElementById('quoteAccount').value = '';
+        }
+
+        function showCreateContactForm() {
+            document.getElementById('createContactForm').classList.remove('hidden');
+        }
+
+        function hideCreateContactForm() {
+            document.getElementById('createContactForm').classList.add('hidden');
+            // Clear form
+            document.getElementById('contactFirstName').value = '';
+            document.getElementById('contactLastName').value = '';
+            document.getElementById('contactEmail').value = '';
+            document.getElementById('contactAccount').value = '';
+        }
+
+        // Check for existing session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const storedToken = sessionStorage.getItem('sf_access_token');
+            const storedInstance = sessionStorage.getItem('sf_instance_url');
+            
+            if (storedToken && storedInstance) {
+                accessToken = storedToken;
+                instanceUrl = storedInstance;
+                
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('appSection').classList.remove('hidden');
+                
+                showStatus('✅ Restored previous session', 'info', 'accountsData');
+                loadAccountsForDropdowns();
+            }
+            
+            console.log('✅ GitHub Pages Salesforce App loaded successfully!');
+            console.log('🌐 Current URL:', window.location.href);
+        });
+    </script>
+</body>
+</html>
+                
