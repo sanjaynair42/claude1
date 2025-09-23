@@ -263,7 +263,7 @@
                     <li><strong>API Name:</strong> "My_Web_App"</li>
                     <li><strong>Contact Email:</strong> Your email</li>
                     <li><strong>✅ Enable OAuth Settings</strong></li>
-                    <li><strong>Callback URL:</strong> <div class="url-display" id="callbackUrl">Loading...</div></li>
+                    <li><strong>Callback URL:</strong> <div class="url-display">https://sanjaynair42.github.io/claude1/</div></li>
                     <li><strong>Selected OAuth Scopes:</strong>
                         <ul>
                             <li>Full access (full)</li>
@@ -290,7 +290,8 @@
                     
                     <div class="form-group">
                         <label for="clientId">Consumer Key (from your Connected App):</label>
-                        <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;">
+                        <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;" oninput="validateConsumerKey()">
+                        <div id="keyValidation" style="margin-top: 8px;"></div>
                     </div>
                     
                     <h3 style="margin: 30px 0 20px 0;">Ready to Connect?</h3>
@@ -347,8 +348,7 @@
 
         // Set current URL on page load
         document.addEventListener('DOMContentLoaded', function() {
-            const currentUrl = window.location.origin + window.location.pathname;
-            document.getElementById('callbackUrl').textContent = currentUrl;
+            const currentUrl = 'https://sanjaynair42.github.io/claude1/';
             
             // Check if we're returning from OAuth
             checkOAuthReturn();
@@ -390,10 +390,54 @@ Description: ${urlParams.get('error_description') || 'No description'}`, 'error'
             }
         }
 
+        function validateConsumerKey() {
+            const key = document.getElementById('clientId').value;
+            const validation = document.getElementById('keyValidation');
+            
+            if (!key) {
+                validation.innerHTML = '';
+                return;
+            }
+            
+            let status = '';
+            let isValid = true;
+            
+            if (key.length < 70) {
+                status += '<span style="color: #dc3545;">⚠️ Too short (should be 80+ chars)</span><br>';
+                isValid = false;
+            } else if (key.length < 80) {
+                status += '<span style="color: #ffc107;">⚠️ Might be incomplete (usually 80+ chars)</span><br>';
+            } else {
+                status += '<span style="color: #28a745;">✅ Length looks good (' + key.length + ' chars)</span><br>';
+            }
+            
+            if (key.startsWith('3MVG9')) {
+                status += '<span style="color: #28a745;">✅ Format looks correct (starts with 3MVG9)</span><br>';
+            } else {
+                status += '<span style="color: #dc3545;">⚠️ Unusual format (usually starts with 3MVG9)</span><br>';
+                isValid = false;
+            }
+            
+            if (key.includes(' ')) {
+                status += '<span style="color: #dc3545;">❌ Contains spaces (remove all spaces)</span><br>';
+                isValid = false;
+            } else {
+                status += '<span style="color: #28a745;">✅ No spaces detected</span><br>';
+            }
+            
+            if (!key.match(/^[a-zA-Z0-9._-]+$/)) {
+                status += '<span style="color: #dc3545;">⚠️ Contains unusual characters</span><br>';
+            } else {
+                status += '<span style="color: #28a745;">✅ Valid characters only</span><br>';
+            }
+            
+            validation.innerHTML = status;
+        }
+
         function startOAuthFlow() {
             const clientId = document.getElementById('clientId').value;
             const loginUrl = document.getElementById('instanceUrl').value;
-            const redirectUri = window.location.origin + window.location.pathname;
+            const redirectUri = 'https://sanjaynair42.github.io/claude1/';
 
             if (!clientId) {
                 showStatus('❌ Please enter your Consumer Key from the Connected App', 'error', 'authStatus');
@@ -415,6 +459,10 @@ Description: ${urlParams.get('error_description') || 'No description'}`, 'error'
                 scope: 'full refresh_token',
                 state: 'oauth_' + Date.now() // Simple state parameter
             });
+
+            // Log the OAuth URL for debugging
+            console.log('🔗 OAuth URL:', oauthUrl);
+            showStatus(`🔗 Redirecting to: ${loginUrl}/services/oauth2/authorize`, 'info', 'authStatus');
 
             // Redirect to Salesforce OAuth
             window.location.href = oauthUrl;
