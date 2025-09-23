@@ -3,741 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salesforce OAuth Integration</title>
+    <title>Salesforce OAuth - Simple Version</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
             padding: 20px;
+            background-color: #f5f5f5;
         }
         
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
-            padding: 30px;
-            text-align: center;
-            color: white;
-        }
-        
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .oauth-bar {
-            background: #28a745;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
-        
-        .main-content {
-            padding: 30px;
-        }
-        
-        .auth-section {
-            margin-bottom: 30px;
-        }
-        
-        .oauth-form {
-            background: #f8f9fa;
             padding: 30px;
             border-radius: 10px;
-            border-left: 5px solid #007cff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #0070d2;
             text-align: center;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #0070d2;
         }
         
         .form-group {
-            margin-bottom: 20px;
-            text-align: left;
+            margin: 20px 0;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
         
         input, select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             font-size: 16px;
-            transition: border-color 0.3s ease;
         }
         
-        input:focus, select:focus {
-            outline: none;
-            border-color: #007cff;
-            box-shadow: 0 0 0 3px rgba(0, 124, 255, 0.1);
-        }
-        
-        .btn {
-            background: linear-gradient(135deg, #007cff, #0056b3);
+        button {
+            background: #0070d2;
             color: white;
-            border: none;
             padding: 15px 30px;
-            border-radius: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 18px;
-            font-weight: 600;
-            transition: transform 0.2s ease;
-            margin: 10px;
-            text-decoration: none;
-            display: inline-block;
         }
         
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 124, 255, 0.3);
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #28a745, #20c997);
-        }
-        
-        .btn-large {
-            padding: 20px 40px;
-            font-size: 20px;
+        button:hover {
+            background: #005fb2;
         }
         
         .status {
             padding: 15px;
-            border-radius: 8px;
             margin: 15px 0;
-            font-weight: 600;
-            white-space: pre-wrap;
+            border-radius: 4px;
         }
         
-        .status.success {
+        .success {
             background: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
         
-        .status.error {
+        .error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
         
-        .status.info {
+        .info {
             background: #d1ecf1;
             color: #0c5460;
             border: 1px solid #bee5eb;
         }
         
-        .setup-instructions {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .setup-instructions h3 {
-            color: #856404;
-            margin-bottom: 15px;
-        }
-        
-        .setup-instructions ol {
-            margin-left: 20px;
-            color: #856404;
-        }
-        
-        .setup-instructions li {
-            margin-bottom: 8px;
-        }
-        
         .hidden {
-            display: none !important;
+            display: none;
         }
         
-        .app-section {
-            padding: 20px;
-        }
-        
-        .user-info {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .data-display {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .record-card {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .record-card h3 {
-            color: #007cff;
-            margin-bottom: 10px;
-        }
-        
-        .url-display {
+        .code-block {
             background: #263238;
             color: #4fc3f7;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 4px;
             font-family: monospace;
-            margin: 10px 0;
             word-break: break-all;
-            font-size: 14px;
         }
         
-        .step-number {
-            background: #007cff;
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
+        .data-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="oauth-bar">
-            🔐 Using Proper OAuth Web Server Flow - No CORS Issues!
+        <h1>🔐 Salesforce OAuth Test</h1>
+        
+        <!-- Setup Instructions -->
+        <div class="step">
+            <h3>📋 Connected App Requirements</h3>
+            <p><strong>Callback URL must be exactly:</strong></p>
+            <div class="code-block">https://sanjaynair42.github.io/claude1/</div>
+            
+            <p><strong>Required OAuth Scopes:</strong></p>
+            <ul>
+                <li>Access and manage your data (api)</li>
+                <li>Full access (full)</li>
+                <li>Perform requests on your behalf at any time (refresh_token, offline_access)</li>
+            </ul>
+            
+            <p><strong>Important Settings:</strong></p>
+            <ul>
+                <li>✅ IP Relaxation: "Relax IP restrictions"</li>
+                <li>❌ Require Secret for Web Server Flow: UNCHECKED</li>
+                <li>❌ Require Secret for Refresh Token Flow: UNCHECKED</li>
+            </ul>
         </div>
         
-        <div class="header">
-            <h1>🚀 Salesforce OAuth Integration</h1>
-            <p>Secure Web Server OAuth Flow</p>
+        <!-- Authentication Form -->
+        <div id="authForm">
+            <div class="form-group">
+                <label for="environment">Salesforce Environment:</label>
+                <select id="environment">
+                    <option value="https://login.salesforce.com">Production</option>
+                    <option value="https://test.salesforce.com">Sandbox</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="clientId">Consumer Key:</label>
+                <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;">
+                <small>Should be 80+ characters starting with 3MVG9</small>
+            </div>
+            
+            <button onclick="startOAuth()">🚀 Connect with Salesforce</button>
+            
+            <div style="margin-top: 20px;">
+                <button onclick="testCredentials()" style="background: #6c757d;">🧪 Test Consumer Key Format</button>
+            </div>
+            
+            <div id="statusMessages"></div>
         </div>
         
-        <div class="main-content">
-            <!-- Step 1: Setup Instructions -->
-            <div class="setup-instructions" id="setupSection">
-                <h3><span class="step-number">1</span>Connected App Setup Required</h3>
-                <ol>
-                    <li><strong>Salesforce Setup</strong> → <strong>Apps</strong> → <strong>App Manager</strong> → <strong>New Connected App</strong></li>
-                    <li><strong>Connected App Name:</strong> "My Web App"</li>
-                    <li><strong>API Name:</strong> "My_Web_App"</li>
-                    <li><strong>Contact Email:</strong> Your email</li>
-                    <li><strong>✅ Enable OAuth Settings</strong></li>
-                    <li><strong>Callback URL:</strong> <div class="url-display">https://sanjaynair42.github.io/claude1/</div></li>
-                    <li><strong>Selected OAuth Scopes:</strong>
-                        <ul>
-                            <li>Full access (full)</li>
-                            <li>Perform requests on your behalf at any time (refresh_token, offline_access)</li>
-                        </ul>
-                    </li>
-                    <li><strong>IP Relaxation:</strong> "Relax IP restrictions"</li>
-                    <li><strong>Save</strong> and wait 2-10 minutes for activation</li>
-                    <li><strong>Copy your Consumer Key</strong> from the Connected App</li>
-                </ol>
+        <!-- Success Section -->
+        <div id="successSection" class="hidden">
+            <div class="status success">
+                <strong>✅ OAuth Flow Initiated Successfully!</strong>
+                <p>You were redirected to Salesforce and back. In a real application, the authorization code would be exchanged for access tokens on a secure backend server.</p>
             </div>
             
-            <!-- Step 2: Authentication -->
-            <div class="auth-section" id="authSection">
-                <h2><span class="step-number">2</span>OAuth Authentication</h2>
-                <div class="oauth-form">
-                    <div class="form-group">
-                        <label for="instanceUrl">Salesforce Instance:</label>
-                        <select id="instanceUrl">
-                            <option value="https://login.salesforce.com">Production (login.salesforce.com)</option>
-                            <option value="https://test.salesforce.com">Sandbox (test.salesforce.com)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clientId">Consumer Key (from your Connected App):</label>
-                        <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;" oninput="validateConsumerKey()">
-                        <div id="keyValidation" style="margin-top: 8px;"></div>
-                    </div>
-                    
-                    <h3 style="margin: 30px 0 20px 0;">Ready to Connect?</h3>
-                    <button class="btn btn-success btn-large" onclick="startOAuthFlow()">
-                        🔐 Connect with Salesforce OAuth
-                    </button>
-                    
-                    <p style="margin-top: 15px; color: #6c757d;">
-                        This will redirect you to Salesforce login, then bring you back here.
-                    </p>
-                </div>
-                
-                <div id="authStatus"></div>
+            <div class="data-section">
+                <h3>📊 Demo Data Access</h3>
+                <button onclick="showDemoData()">Load Sample Salesforce Data</button>
+                <div id="demoData"></div>
             </div>
             
-            <!-- Step 3: Application -->
-            <div class="app-section hidden" id="appSection">
-                <h2><span class="step-number">3</span>Connected to Salesforce!</h2>
-                
-                <div class="user-info" id="userInfo">
-                    <h3>👤 User Information</h3>
-                    <div id="userDetails">Loading...</div>
-                </div>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <button class="btn" onclick="getAccounts()">📊 Get Accounts</button>
-                    <button class="btn" onclick="getContacts()">👥 Get Contacts</button>
-                    <button class="btn btn-success" onclick="createTestAccount()">➕ Create Test Account</button>
-                    <button class="btn" onclick="logout()" style="background: #dc3545;">🚪 Logout</button>
-                </div>
-                
-                <div id="dataDisplay" class="data-display"></div>
-            </div>
-            
-            <!-- Demo Section -->
-            <div class="auth-section" id="demoSection">
-                <h2>🎮 Try Demo Mode</h2>
-                <div class="oauth-form">
-                    <p>Want to see how the interface works without connecting to Salesforce?</p>
-                    <button class="btn btn-success" onclick="enterDemoMode()">
-                        🎮 Enter Demo Mode
-                    </button>
-                </div>
-            </div>
+            <button onclick="resetApp()" style="background: #dc3545;">🔄 Start Over</button>
         </div>
     </div>
 
     <script>
-        // Global variables
-        let accessToken = '';
-        let instanceUrl = '';
-        let refreshToken = '';
-        let isDemo = false;
-
-        // Set current URL on page load
+        // Check if returning from OAuth
         document.addEventListener('DOMContentLoaded', function() {
-            const currentUrl = 'https://sanjaynair42.github.io/claude1/';
-            
-            // Check if we're returning from OAuth
             checkOAuthReturn();
-            
-            console.log('✅ Salesforce OAuth App loaded');
-            console.log('🌐 Current URL:', currentUrl);
         });
 
         function checkOAuthReturn() {
             const urlParams = new URLSearchParams(window.location.search);
             const code = urlParams.get('code');
             const error = urlParams.get('error');
+            const errorDescription = urlParams.get('error_description');
             
             if (error) {
-                showStatus(`❌ OAuth Error: ${error}
-Description: ${urlParams.get('error_description') || 'No description'}`, 'error', 'authStatus');
+                let errorMessage = `❌ OAuth Error: ${error}`;
+                if (errorDescription) {
+                    errorMessage += `\n\nDescription: ${decodeURIComponent(errorDescription)}`;
+                }
+                
+                if (error === 'access_denied') {
+                    errorMessage += `\n\n💡 This usually means:\n- You clicked "Deny" on the Salesforce authorization page\n- OR your Connected App needs more time to activate (wait 10+ minutes)`;
+                } else if (error.includes('invalid')) {
+                    errorMessage += `\n\n💡 This usually means:\n- Consumer Key is incorrect\n- Callback URL doesn't match exactly\n- Connected App settings need to be updated`;
+                }
+                
+                showStatus(errorMessage, 'error');
+                
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
                 return;
             }
             
             if (code) {
-                showStatus('✅ Authorization code received! In a real app, this would be exchanged for tokens on your backend server.', 'success', 'authStatus');
+                // Success! We got an authorization code
+                showStatus(`✅ Success! Received authorization code: ${code.substring(0, 20)}...\n\nIn a real application, this code would be sent to your backend server to exchange for access tokens.`, 'success');
                 
-                // For demo purposes, simulate successful login
-                simulateSuccessfulOAuth();
+                document.getElementById('authForm').classList.add('hidden');
+                document.getElementById('successSection').classList.remove('hidden');
                 
                 // Clean up URL
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-            
-            // Check for stored tokens (in real app, these would come from secure backend)
-            const storedToken = sessionStorage.getItem('sf_access_token');
-            const storedInstance = sessionStorage.getItem('sf_instance_url');
-            
-            if (storedToken && storedInstance) {
-                accessToken = storedToken;
-                instanceUrl = storedInstance;
-                showApp();
-                getUserInfo();
-            }
         }
 
-        function validateConsumerKey() {
-            const key = document.getElementById('clientId').value;
-            const validation = document.getElementById('keyValidation');
+        function testCredentials() {
+            const clientId = document.getElementById('clientId').value;
             
-            if (!key) {
-                validation.innerHTML = '';
+            if (!clientId) {
+                showStatus('❌ Please enter a Consumer Key first', 'error');
                 return;
             }
             
-            let status = '';
+            let validation = '🔍 Consumer Key Validation:\n\n';
             let isValid = true;
             
-            if (key.length < 70) {
-                status += '<span style="color: #dc3545;">⚠️ Too short (should be 80+ chars)</span><br>';
+            // Length check
+            if (clientId.length < 70) {
+                validation += '❌ Too short (should be 80+ characters)\n';
                 isValid = false;
-            } else if (key.length < 80) {
-                status += '<span style="color: #ffc107;">⚠️ Might be incomplete (usually 80+ chars)</span><br>';
+            } else if (clientId.length < 80) {
+                validation += '⚠️ Might be incomplete (usually 80+ characters)\n';
             } else {
-                status += '<span style="color: #28a745;">✅ Length looks good (' + key.length + ' chars)</span><br>';
+                validation += `✅ Length looks good (${clientId.length} characters)\n`;
             }
             
-            if (key.startsWith('3MVG9')) {
-                status += '<span style="color: #28a745;">✅ Format looks correct (starts with 3MVG9)</span><br>';
+            // Format check
+            if (clientId.startsWith('3MVG9')) {
+                validation += '✅ Format looks correct (starts with 3MVG9)\n';
             } else {
-                status += '<span style="color: #dc3545;">⚠️ Unusual format (usually starts with 3MVG9)</span><br>';
+                validation += '⚠️ Unusual format (usually starts with 3MVG9)\n';
                 isValid = false;
             }
             
-            if (key.includes(' ')) {
-                status += '<span style="color: #dc3545;">❌ Contains spaces (remove all spaces)</span><br>';
+            // Character check
+            if (clientId.includes(' ')) {
+                validation += '❌ Contains spaces (remove all spaces)\n';
                 isValid = false;
             } else {
-                status += '<span style="color: #28a745;">✅ No spaces detected</span><br>';
+                validation += '✅ No spaces detected\n';
             }
             
-            if (!key.match(/^[a-zA-Z0-9._-]+$/)) {
-                status += '<span style="color: #dc3545;">⚠️ Contains unusual characters</span><br>';
+            if (!clientId.match(/^[a-zA-Z0-9._-]+$/)) {
+                validation += '⚠️ Contains unusual characters\n';
             } else {
-                status += '<span style="color: #28a745;">✅ Valid characters only</span><br>';
+                validation += '✅ Valid characters only\n';
             }
             
-            validation.innerHTML = status;
+            validation += `\n${isValid ? '✅ Consumer Key looks valid!' : '❌ Consumer Key has issues - please check your Connected App'}`;
+            
+            showStatus(validation, isValid ? 'info' : 'error');
         }
 
-        function startOAuthFlow() {
+        function startOAuth() {
             const clientId = document.getElementById('clientId').value;
-            const loginUrl = document.getElementById('instanceUrl').value;
+            const environment = document.getElementById('environment').value;
             const redirectUri = 'https://sanjaynair42.github.io/claude1/';
 
             if (!clientId) {
-                showStatus('❌ Please enter your Consumer Key from the Connected App', 'error', 'authStatus');
+                showStatus('❌ Please enter your Consumer Key', 'error');
                 return;
             }
 
-            // Store settings for later use
-            sessionStorage.setItem('sf_client_id', clientId);
-            sessionStorage.setItem('sf_login_url', loginUrl);
-            sessionStorage.setItem('sf_redirect_uri', redirectUri);
+            if (clientId.length < 70) {
+                showStatus('❌ Consumer Key appears to be too short. Please verify it\'s correct.', 'error');
+                return;
+            }
 
-            showStatus('🔄 Redirecting to Salesforce for authentication...', 'info', 'authStatus');
+            showStatus('🔄 Redirecting to Salesforce for authentication...', 'info');
 
-            // Build OAuth URL
-            const oauthUrl = `${loginUrl}/services/oauth2/authorize?` + new URLSearchParams({
+            // Build OAuth URL with minimal scopes first
+            const params = new URLSearchParams({
                 response_type: 'code',
                 client_id: clientId,
                 redirect_uri: redirectUri,
-                scope: 'full refresh_token',
-                state: 'oauth_' + Date.now() // Simple state parameter
+                scope: 'api refresh_token',
+                state: Date.now().toString()
             });
 
-            // Log the OAuth URL for debugging
-            console.log('🔗 OAuth URL:', oauthUrl);
-            showStatus(`🔗 Redirecting to: ${loginUrl}/services/oauth2/authorize`, 'info', 'authStatus');
-
-            // Redirect to Salesforce OAuth
-            window.location.href = oauthUrl;
+            const oauthUrl = `${environment}/services/oauth2/authorize?${params}`;
+            
+            console.log('OAuth URL:', oauthUrl);
+            
+            // Small delay then redirect
+            setTimeout(() => {
+                window.location.href = oauthUrl;
+            }, 1000);
         }
 
-        function simulateSuccessfulOAuth() {
-            // In a real application, you would:
-            // 1. Send the authorization code to your backend
-            // 2. Backend exchanges code for tokens using client_secret
-            // 3. Backend returns tokens to frontend
+        function showDemoData() {
+            const demoAccounts = [
+                { Id: '001DEMO001', Name: 'Acme Corporation', Type: 'Customer - Direct', Industry: 'Technology' },
+                { Id: '001DEMO002', Name: 'Global Solutions Inc', Type: 'Prospect', Industry: 'Manufacturing' },
+                { Id: '001DEMO003', Name: 'TechStart Solutions', Type: 'Customer - Channel', Industry: 'Software' }
+            ];
             
-            // For demo purposes:
-            accessToken = 'demo_access_token_' + Date.now();
-            instanceUrl = 'https://demo.my.salesforce.com';
-            refreshToken = 'demo_refresh_token';
-            
-            sessionStorage.setItem('sf_access_token', accessToken);
-            sessionStorage.setItem('sf_instance_url', instanceUrl);
-            sessionStorage.setItem('sf_refresh_token', refreshToken);
-            
-            showApp();
-            getUserInfo();
-        }
-
-        function enterDemoMode() {
-            isDemo = true;
-            accessToken = 'demo_token';
-            instanceUrl = 'https://demo.salesforce.com';
-            
-            showStatus('🎮 Entered demo mode - showing sample data', 'success', 'authStatus');
-            showApp();
-            getUserInfo();
-        }
-
-        function showApp() {
-            document.getElementById('setupSection').style.display = 'none';
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('demoSection').classList.add('hidden');
-            document.getElementById('appSection').classList.remove('hidden');
-        }
-
-        async function getUserInfo() {
-            if (isDemo || accessToken.includes('demo')) {
-                document.getElementById('userDetails').innerHTML = `
-                    <div class="record-card">
-                        <p><strong>Name:</strong> Demo User</p>
-                        <p><strong>Email:</strong> demo@example.com</p>
-                        <p><strong>Organization:</strong> Demo Organization</p>
-                        <p><strong>Status:</strong> ${isDemo ? 'Demo Mode' : 'OAuth Demo'}</p>
-                        <p><strong>Access Token:</strong> ${accessToken.substring(0, 20)}...</p>
+            let html = '<h4>📊 Sample Salesforce Accounts</h4>';
+            demoAccounts.forEach(account => {
+                html += `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 10px 0; border-radius: 4px;">
+                        <strong>${account.Name}</strong><br>
+                        Type: ${account.Type}<br>
+                        Industry: ${account.Industry}<br>
+                        ID: ${account.Id}
                     </div>
                 `;
-                return;
-            }
-
-            try {
-                const response = await fetch(`${instanceUrl}/services/oauth2/userinfo`, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-
-                if (response.ok) {
-                    const userInfo = await response.json();
-                    document.getElementById('userDetails').innerHTML = `
-                        <div class="record-card">
-                            <p><strong>Name:</strong> ${userInfo.name}</p>
-                            <p><strong>Email:</strong> ${userInfo.email}</p>
-                            <p><strong>Organization:</strong> ${userInfo.organization_id}</p>
-                            <p><strong>User ID:</strong> ${userInfo.user_id}</p>
-                        </div>
-                    `;
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-            } catch (error) {
-                showStatus(`❌ Failed to get user info: ${error.message}`, 'error');
-            }
-        }
-
-        async function getAccounts() {
-            if (isDemo || accessToken.includes('demo')) {
-                const demoAccounts = [
-                    { Id: 'demo001', Name: 'Acme Corporation', Type: 'Customer - Direct', Industry: 'Technology' },
-                    { Id: 'demo002', Name: 'Global Innovations Inc', Type: 'Prospect', Industry: 'Manufacturing' },
-                    { Id: 'demo003', Name: 'TechStart Solutions', Type: 'Customer - Channel', Industry: 'Software' }
-                ];
-                
-                let html = `<h4>📊 Demo Accounts (${demoAccounts.length} records)</h4>`;
-                demoAccounts.forEach(account => {
-                    html += `
-                        <div class="record-card">
-                            <h3>${account.Name}</h3>
-                            <p><strong>Type:</strong> ${account.Type}</p>
-                            <p><strong>Industry:</strong> ${account.Industry}</p>
-                            <p><strong>ID:</strong> ${account.Id}</p>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('dataDisplay').innerHTML = html;
-                showStatus('✅ Demo accounts loaded!', 'success');
-                return;
-            }
-
-            try {
-                showStatus('🔄 Fetching accounts...', 'info');
-                const response = await fetch(`${instanceUrl}/services/data/v58.0/query/?q=SELECT Id, Name, Type, Industry FROM Account LIMIT 10`, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    let html = `<h4>📊 Accounts (${data.records.length} found)</h4>`;
-                    
-                    data.records.forEach(account => {
-                        html += `
-                            <div class="record-card">
-                                <h3>${account.Name}</h3>
-                                <p><strong>Type:</strong> ${account.Type || 'Not specified'}</p>
-                                <p><strong>Industry:</strong> ${account.Industry || 'Not specified'}</p>
-                                <p><strong>ID:</strong> ${account.Id}</p>
-                            </div>
-                        `;
-                    });
-                    
-                    document.getElementById('dataDisplay').innerHTML = html;
-                    showStatus('✅ Accounts loaded successfully!', 'success');
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-            } catch (error) {
-                showStatus(`❌ Failed to fetch accounts: ${error.message}`, 'error');
-            }
-        }
-
-        async function getContacts() {
-            if (isDemo || accessToken.includes('demo')) {
-                const demoContacts = [
-                    { Id: 'con001', FirstName: 'John', LastName: 'Smith', Email: 'john.smith@acme.com', Account: { Name: 'Acme Corporation' } },
-                    { Id: 'con002', FirstName: 'Sarah', LastName: 'Johnson', Email: 'sarah.j@global.com', Account: { Name: 'Global Innovations Inc' } }
-                ];
-                
-                let html = `<h4>👥 Demo Contacts (${demoContacts.length} records)</h4>`;
-                demoContacts.forEach(contact => {
-                    html += `
-                        <div class="record-card">
-                            <h3>${contact.FirstName} ${contact.LastName}</h3>
-                            <p><strong>Email:</strong> ${contact.Email}</p>
-                            <p><strong>Account:</strong> ${contact.Account.Name}</p>
-                            <p><strong>ID:</strong> ${contact.Id}</p>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('dataDisplay').innerHTML = html;
-                showStatus('✅ Demo contacts loaded!', 'success');
-                return;
-            }
-
-            try {
-                showStatus('🔄 Fetching contacts...', 'info');
-                const response = await fetch(`${instanceUrl}/services/data/v58.0/query/?q=SELECT Id, FirstName, LastName, Email, Account.Name FROM Contact LIMIT 10`, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    let html = `<h4>👥 Contacts (${data.records.length} found)</h4>`;
-                    
-                    data.records.forEach(contact => {
-                        html += `
-                            <div class="record-card">
-                                <h3>${contact.FirstName} ${contact.LastName}</h3>
-                                <p><strong>Email:</strong> ${contact.Email || 'Not specified'}</p>
-                                <p><strong>Account:</strong> ${contact.Account?.Name || 'Not specified'}</p>
-                                <p><strong>ID:</strong> ${contact.Id}</p>
-                            </div>
-                        `;
-                    });
-                    
-                    document.getElementById('dataDisplay').innerHTML = html;
-                    showStatus('✅ Contacts loaded successfully!', 'success');
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-            } catch (error) {
-                showStatus(`❌ Failed to fetch contacts: ${error.message}`, 'error');
-            }
-        }
-
-        async function createTestAccount() {
-            if (isDemo || accessToken.includes('demo')) {
-                const newAccount = {
-                    Id: 'demo' + Date.now(),
-                    Name: 'Test Account ' + new Date().toLocaleTimeString(),
-                    Type: 'Prospect',
-                    Industry: 'Demo'
-                };
-                
-                document.getElementById('dataDisplay').innerHTML = `
-                    <h4>✅ Demo Account Created</h4>
-                    <div class="record-card">
-                        <h3>${newAccount.Name}</h3>
-                        <p><strong>Type:</strong> ${newAccount.Type}</p>
-                        <p><strong>Industry:</strong> ${newAccount.Industry}</p>
-                        <p><strong>ID:</strong> ${newAccount.Id}</p>
-                    </div>
-                `;
-                
-                showStatus('✅ Demo account created successfully!', 'success');
-                return;
-            }
-
-            try {
-                showStatus('🔄 Creating test account...', 'info');
-                const response = await fetch(`${instanceUrl}/services/data/v58.0/sobjects/Account`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        Name: 'Test Account ' + new Date().toLocaleString(),
-                        Type: 'Prospect',
-                        Industry: 'Technology'
-                    })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    showStatus(`✅ Account created successfully! ID: ${result.id}`, 'success');
-                    getAccounts(); // Refresh the accounts list
-                } else {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-            } catch (error) {
-                showStatus(`❌ Failed to create account: ${error.message}`, 'error');
-            }
-        }
-
-        function logout() {
-            accessToken = '';
-            instanceUrl = '';
-            refreshToken = '';
-            isDemo = false;
+            });
             
-            sessionStorage.clear();
-            
-            document.getElementById('setupSection').style.display = 'block';
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('demoSection').classList.remove('hidden');
-            document.getElementById('appSection').classList.add('hidden');
-            
-            showStatus('✅ Logged out successfully', 'success', 'authStatus');
+            document.getElementById('demoData').innerHTML = html;
         }
 
-        function showStatus(message, type, containerId = 'dataDisplay') {
+        function resetApp() {
+            document.getElementById('authForm').classList.remove('hidden');
+            document.getElementById('successSection').classList.add('hidden');
+            document.getElementById('statusMessages').innerHTML = '';
+            document.getElementById('clientId').value = '';
+        }
+
+        function showStatus(message, type) {
             const statusDiv = document.createElement('div');
             statusDiv.className = `status ${type}`;
+            statusDiv.style.whiteSpace = 'pre-wrap';
             statusDiv.textContent = message;
             
-            const container = document.getElementById(containerId);
-            if (container) {
-                container.insertBefore(statusDiv, container.firstChild);
-                
+            const container = document.getElementById('statusMessages');
+            container.appendChild(statusDiv);
+            
+            // Auto-remove after 10 seconds for info messages
+            if (type === 'info') {
                 setTimeout(() => {
                     if (statusDiv.parentNode) {
                         statusDiv.remove();
                     }
-                }, 8000);
+                }, 10000);
             }
         }
     </script>
