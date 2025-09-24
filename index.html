@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salesforce Frontend Integration</title>
+    <title>Salesforce Basic OAuth Test</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 1000px;
-            margin: 0 auto;
+            max-width: 900px;
+            margin: 30px auto;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #f0f2f5;
         }
         
         .container {
             background: white;
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         
         .header {
@@ -27,12 +26,35 @@
             margin-bottom: 30px;
         }
         
-        .auth-section, .app-section {
+        .critical-fix {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
             margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .critical-fix h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .scope-fix {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .scope-fix h4 {
+            color: #721c24;
+            margin-bottom: 10px;
         }
         
         .form-group {
-            margin: 15px 0;
+            margin: 20px 0;
         }
         
         label {
@@ -50,43 +72,35 @@
             font-size: 16px;
         }
         
-        input:focus, select:focus {
-            outline: none;
-            border-color: #0070d2;
-            box-shadow: 0 0 0 3px rgba(0, 112, 210, 0.1);
-        }
-        
         .btn {
             background: #0070d2;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 15px 25px;
             border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            margin: 5px;
-            transition: background 0.3s ease;
+            margin: 8px;
+            transition: all 0.3s ease;
         }
         
         .btn:hover {
             background: #005fb2;
-        }
-        
-        .btn-success {
-            background: #28a745;
-        }
-        
-        .btn-success:hover {
-            background: #218838;
+            transform: translateY(-2px);
         }
         
         .btn-danger {
             background: #dc3545;
         }
         
-        .btn-danger:hover {
-            background: #c82333;
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
         }
         
         .status {
@@ -94,6 +108,7 @@
             border-radius: 8px;
             margin: 15px 0;
             font-weight: bold;
+            white-space: pre-wrap;
         }
         
         .success {
@@ -118,159 +133,149 @@
             display: none;
         }
         
-        .data-card {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 4px solid #0070d2;
-        }
-        
-        .data-card h3 {
-            margin: 0 0 10px 0;
-            color: #0070d2;
-        }
-        
-        .tabs {
-            display: flex;
-            background: #f8f9fa;
+        .test-section {
+            background: #e8f5e8;
+            padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
-            overflow: hidden;
         }
         
-        .tab {
-            flex: 1;
+        .scope-option {
+            background: white;
+            border: 1px solid #ddd;
             padding: 15px;
-            background: none;
-            border: none;
+            margin: 10px 0;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
         
-        .tab.active {
-            background: #0070d2;
-            color: white;
+        .scope-option:hover {
+            border-color: #0070d2;
+            background: #f0f8ff;
         }
         
-        .tab-content {
-            display: none;
-            padding: 20px;
-            background: #f8f9fa;
+        .code-block {
+            background: #263238;
+            color: #4fc3f7;
+            padding: 15px;
             border-radius: 8px;
+            font-family: monospace;
             margin: 10px 0;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .user-info {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
+            word-break: break-all;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Salesforce Integration</h1>
-            <p>Complete OAuth Flow with Real API Access</p>
+            <h1>🔧 Salesforce OAuth Scope Troubleshooter</h1>
+            <p>Let's fix your scope error step by step</p>
         </div>
         
-        <!-- Authentication Section -->
-        <div class="auth-section" id="authSection">
-            <h2>🔐 Connect to Salesforce</h2>
+        <!-- Critical Fix Section -->
+        <div class="critical-fix">
+            <h3>🚨 IMMEDIATE FIX REQUIRED</h3>
+            <p>The scope error means your Connected App has scopes that aren't available. Here's what to do:</p>
             
-            <div class="form-group">
-                <label for="environment">Environment:</label>
-                <select id="environment">
-                    <option value="https://login.salesforce.com">Production</option>
-                    <option value="https://test.salesforce.com">Sandbox</option>
-                </select>
+            <div class="scope-fix">
+                <h4>🔄 Create BRAND NEW Connected App</h4>
+                <ol>
+                    <li><strong>Delete your current Connected App</strong> (it might have bad scope settings)</li>
+                    <li><strong>Create new one</strong> with these EXACT settings:</li>
+                </ol>
+                
+                <div class="code-block">
+                Connected App Name: Test App Basic
+                API Name: Test_App_Basic
+                Contact Email: your.email@domain.com
+
+                ✅ Enable OAuth Settings
+
+                Callback URL: https://sanjaynair42.github.io/claude1/
+
+                Selected OAuth Scopes (ONLY ONE):
+                ✅ Access and manage your data (api)
+
+                CRITICAL:
+                ❌ Require Secret for Web Server Flow: UNCHECKED
+                ❌ Require Secret for Refresh Token Flow: UNCHECKED
+                ✅ IP Relaxation: Relax IP restrictions
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="clientId">Consumer Key:</label>
-                <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;">
-            </div>
-            
-            <div class="form-group">
-                <label for="clientSecret">Consumer Secret (needed for token exchange):</label>
-                <input type="password" id="clientSecret" placeholder="Your consumer secret">
-                <small>⚠️ In production, this should be handled by your backend server for security</small>
-            </div>
-            
-            <button class="btn" onclick="startImplicitFlow()">🔐 Connect with Implicit Flow</button>
-            <button class="btn btn-success" onclick="startCodeFlow()">🔐 Connect with Authorization Code</button>
-            
-            <div id="authStatus"></div>
+            <p><strong>⏰ After creating: Wait 15 minutes before testing!</strong></p>
         </div>
         
-        <!-- Application Section -->
-        <div class="app-section hidden" id="appSection">
-            <div class="user-info" id="userInfo">
-                <h3>👤 Connected User</h3>
-                <div id="userDetails">Loading...</div>
+        <!-- Testing Form -->
+        <div class="form-group">
+            <label for="environment">Environment:</label>
+            <select id="environment">
+                <option value="https://login.salesforce.com">Production</option>
+                <option value="https://test.salesforce.com">Sandbox</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="clientId">Consumer Key (from NEW Connected App):</label>
+            <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;">
+        </div>
+        
+        <!-- Scope Tests -->
+        <div class="test-section">
+            <h3>🧪 Progressive Scope Testing</h3>
+            <p>Try these in order - if one fails, try the next:</p>
+            
+            <div class="scope-option" onclick="testScope('id')">
+                <h4>1. Test: ID Only (Most Basic)</h4>
+                <p><strong>Scope:</strong> <code>id</code></p>
+                <p>Just gets your user ID - should work on any org</p>
+                <button class="btn" onclick="event.stopPropagation(); testScope('id')">Test ID Scope</button>
             </div>
             
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('accounts')">Accounts</button>
-                <button class="tab" onclick="showTab('contacts')">Contacts</button>
-                <button class="tab" onclick="showTab('create')">Create Data</button>
+            <div class="scope-option" onclick="testScope('api')">
+                <h4>2. Test: API Access</h4>
+                <p><strong>Scope:</strong> <code>api</code></p>
+                <p>Basic API access - what we need for Salesforce operations</p>
+                <button class="btn" onclick="event.stopPropagation(); testScope('api')">Test API Scope</button>
             </div>
             
-            <!-- Accounts Tab -->
-            <div class="tab-content active" id="accountsTab">
-                <h3>📊 Account Management</h3>
-                <button class="btn" onclick="getAccounts()">Load Accounts</button>
-                <div id="accountsData"></div>
+            <div class="scope-option" onclick="testScope('web')">
+                <h4>3. Test: Web Access</h4>
+                <p><strong>Scope:</strong> <code>web</code></p>
+                <p>Web-based access - sometimes works when API doesn't</p>
+                <button class="btn" onclick="event.stopPropagation(); testScope('web')">Test Web Scope</button>
             </div>
             
-            <!-- Contacts Tab -->
-            <div class="tab-content" id="contactsTab">
-                <h3>👥 Contact Management</h3>
-                <button class="btn" onclick="getContacts()">Load Contacts</button>
-                <div id="contactsData"></div>
+            <div class="scope-option" onclick="testScope('openid')">
+                <h4>4. Test: OpenID</h4>
+                <p><strong>Scope:</strong> <code>openid</code></p>
+                <p>Basic identity - minimal permissions</p>
+                <button class="btn" onclick="event.stopPropagation(); testScope('openid')">Test OpenID Scope</button>
+            </div>
+        </div>
+        
+        <div id="statusMessages"></div>
+        
+        <!-- Success Section -->
+        <div id="successSection" class="hidden">
+            <div class="status success">
+                🎉 SUCCESS! OAuth worked with minimal scope.
             </div>
             
-            <!-- Create Tab -->
-            <div class="tab-content" id="createTab">
-                <h3>➕ Create New Records</h3>
-                
-                <div style="margin: 20px 0;">
-                    <h4>Create Account</h4>
-                    <input type="text" id="newAccountName" placeholder="Account Name" style="margin: 5px;">
-                    <input type="text" id="newAccountIndustry" placeholder="Industry" style="margin: 5px;">
-                    <button class="btn btn-success" onclick="createAccount()">Create Account</button>
-                </div>
-                
-                <div style="margin: 20px 0;">
-                    <h4>Create Contact</h4>
-                    <input type="text" id="newContactFirst" placeholder="First Name" style="margin: 5px;">
-                    <input type="text" id="newContactLast" placeholder="Last Name" style="margin: 5px;">
-                    <input type="email" id="newContactEmail" placeholder="Email" style="margin: 5px;">
-                    <button class="btn btn-success" onclick="createContact()">Create Contact</button>
-                </div>
-                
-                <div id="createResults"></div>
+            <div class="test-section">
+                <h3>📊 Now Test API Access</h3>
+                <button class="btn btn-success" onclick="testBasicApi()">Test Basic API Call</button>
+                <div id="apiResults"></div>
             </div>
             
-            <div style="text-align: center; margin: 30px 0;">
-                <button class="btn btn-danger" onclick="logout()">🚪 Logout</button>
-            </div>
+            <button class="btn btn-danger" onclick="startOver()">🔄 Start Over</button>
         </div>
     </div>
 
     <script>
-        // Global variables
         let accessToken = '';
         let instanceUrl = '';
-        let refreshToken = '';
 
         document.addEventListener('DOMContentLoaded', function() {
             checkOAuthReturn();
@@ -281,343 +286,151 @@
             const hash = window.location.hash.substring(1);
             const hashParams = new URLSearchParams(hash);
             
-            // Check for authorization code (from code flow)
-            const code = urlParams.get('code');
-            if (code) {
-                exchangeCodeForTokens(code);
-                return;
-            }
-            
-            // Check for access token (from implicit flow)
-            const token = hashParams.get('access_token');
-            const instance = hashParams.get('instance_url');
-            
-            if (token && instance) {
-                accessToken = token;
-                instanceUrl = instance;
-                refreshToken = hashParams.get('refresh_token');
+            // Check for errors
+            const error = urlParams.get('error') || hashParams.get('error');
+            if (error) {
+                let errorMessage = `❌ Still getting scope error: ${error}`;
+                const description = urlParams.get('error_description') || hashParams.get('error_description');
                 
-                showStatus('✅ Successfully connected via implicit flow!', 'success');
-                showApp();
-                getUserInfo();
+                if (description) {
+                    errorMessage += `\n\nDescription: ${decodeURIComponent(description)}`;
+                }
                 
-                // Clean up URL
+                if (error === 'invalid_scope') {
+                    errorMessage += `\n\n🔧 NEXT STEPS:\n1. Your org might have very restricted scopes\n2. Try creating the Connected App in a Sandbox instead\n3. Contact your Salesforce admin\n4. Or try the most basic scope tests above`;
+                }
+                
+                showStatus(errorMessage, 'error');
                 window.history.replaceState({}, document.title, window.location.pathname);
                 return;
             }
             
-            // Check for errors
-            const error = urlParams.get('error') || hashParams.get('error');
-            if (error) {
-                const description = urlParams.get('error_description') || hashParams.get('error_description');
-                showStatus(`❌ OAuth Error: ${error}\n${description || ''}`, 'error');
+            // Check for success
+            const code = urlParams.get('code');
+            const token = hashParams.get('access_token');
+            const instance = hashParams.get('instance_url');
+            
+            if (code) {
+                showStatus(`✅ SUCCESS! Got authorization code: ${code.substring(0, 20)}...\n\nYour scope issue is FIXED!`, 'success');
+                showSuccessSection();
+            } else if (token && instance) {
+                accessToken = token;
+                instanceUrl = instance;
+                showStatus('✅ SUCCESS! Got access token directly!\n\nYour scope issue is FIXED!', 'success');
+                showSuccessSection();
+            }
+            
+            if (code || token) {
+                window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
 
-        function startImplicitFlow() {
+        function testScope(scopeType) {
             const clientId = document.getElementById('clientId').value;
             const environment = document.getElementById('environment').value;
             
             if (!clientId) {
-                showStatus('❌ Please enter your Consumer Key', 'error');
+                showStatus('❌ Please enter your Consumer Key from the NEW Connected App', 'error');
                 return;
             }
             
-            const redirectUri = window.location.origin + window.location.pathname;
+            if (clientId.length < 70) {
+                showStatus('❌ Consumer Key looks too short. Make sure you copied it completely.', 'error');
+                return;
+            }
             
+            const scopeMap = {
+                'id': 'id',
+                'api': 'api',
+                'web': 'web',
+                'openid': 'openid'
+            };
+            
+            const scope = scopeMap[scopeType] || 'id';
+            
+            showStatus(`🔄 Testing scope: "${scope}"\n\nRedirecting to Salesforce...`, 'info');
+            
+            // Use implicit flow for immediate results
             const params = new URLSearchParams({
                 response_type: 'token',
                 client_id: clientId,
-                redirect_uri: redirectUri,
-                scope: 'api refresh_token',
-                state: Date.now().toString()
+                redirect_uri: 'https://sanjaynair42.github.io/claude1/',
+                scope: scope,
+                state: `${scopeType}_${Date.now()}`
             });
             
             const oauthUrl = `${environment}/services/oauth2/authorize?${params}`;
-            window.location.href = oauthUrl;
+            
+            console.log(`Testing scope: ${scope}`);
+            console.log(`OAuth URL: ${oauthUrl}`);
+            
+            setTimeout(() => {
+                window.location.href = oauthUrl;
+            }, 2000);
         }
 
-        function startCodeFlow() {
-            const clientId = document.getElementById('clientId').value;
-            const environment = document.getElementById('environment').value;
-            
-            if (!clientId) {
-                showStatus('❌ Please enter your Consumer Key', 'error');
-                return;
-            }
-            
-            const redirectUri = window.location.origin + window.location.pathname;
-            
-            const params = new URLSearchParams({
-                response_type: 'code',
-                client_id: clientId,
-                redirect_uri: redirectUri,
-                scope: 'api refresh_token',
-                state: Date.now().toString()
-            });
-            
-            const oauthUrl = `${environment}/services/oauth2/authorize?${params}`;
-            window.location.href = oauthUrl;
+        function showSuccessSection() {
+            document.getElementById('successSection').classList.remove('hidden');
         }
 
-        async function exchangeCodeForTokens(code) {
-            const clientId = document.getElementById('clientId').value;
-            const clientSecret = document.getElementById('clientSecret').value;
-            const environment = document.getElementById('environment').value;
-            
-            if (!clientSecret) {
-                showStatus('❌ Consumer Secret is required for token exchange. In production, this would be done on your backend server.', 'error');
+        async function testBasicApi() {
+            if (!accessToken) {
+                showApiResult('❌ No access token available', 'error');
                 return;
             }
-            
-            showStatus('🔄 Exchanging authorization code for access tokens...', 'info');
             
             try {
-                const response = await fetch(`${environment}/services/oauth2/token`, {
-                    method: 'POST',
+                // Try the most basic API call
+                const response = await fetch(`${instanceUrl}/services/data/`, {
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        grant_type: 'authorization_code',
-                        client_id: clientId,
-                        client_secret: clientSecret,
-                        redirect_uri: window.location.origin + window.location.pathname,
-                        code: code
-                    })
+                        'Authorization': `Bearer ${accessToken}`
+                    }
                 });
-                
-                const data = await response.json();
                 
                 if (response.ok) {
-                    accessToken = data.access_token;
-                    instanceUrl = data.instance_url;
-                    refreshToken = data.refresh_token;
-                    
-                    showStatus('✅ Successfully exchanged code for tokens!', 'success');
-                    showApp();
-                    getUserInfo();
+                    const data = await response.json();
+                    showApiResult(`✅ API Access Works!\n\nAvailable API versions: ${data.length}\nLatest version: ${data[data.length - 1]?.version || 'Unknown'}`, 'success');
                 } else {
-                    throw new Error(`${data.error}: ${data.error_description}`);
+                    const errorText = await response.text();
+                    showApiResult(`⚠️ Limited API access (HTTP ${response.status})\n\nThis might be due to minimal scope, but OAuth is working!\n\nError: ${errorText}`, 'info');
                 }
             } catch (error) {
-                showStatus(`❌ Token exchange failed: ${error.message}`, 'error');
-            }
-            
-            // Clean up URL
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-
-        function showApp() {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('appSection').classList.remove('hidden');
-        }
-
-        async function getUserInfo() {
-            try {
-                const response = await salesforceApi('/services/oauth2/userinfo');
-                const userInfo = response;
-                
-                document.getElementById('userDetails').innerHTML = `
-                    <div class="data-card">
-                        <p><strong>Name:</strong> ${userInfo.name}</p>
-                        <p><strong>Email:</strong> ${userInfo.email}</p>
-                        <p><strong>Organization:</strong> ${userInfo.organization_id}</p>
-                        <p><strong>User ID:</strong> ${userInfo.user_id}</p>
-                        <p><strong>Instance:</strong> ${instanceUrl}</p>
-                    </div>
-                `;
-            } catch (error) {
-                showStatus(`❌ Failed to get user info: ${error.message}`, 'error');
+                showApiResult(`❌ API test failed: ${error.message}\n\nBut OAuth worked, so the scope issue is resolved!`, 'info');
             }
         }
 
-        async function getAccounts() {
-            try {
-                showStatus('🔄 Loading accounts...', 'info');
-                const data = await salesforceApi('/services/data/v58.0/query/?q=SELECT Id, Name, Type, Industry, Phone FROM Account LIMIT 20');
-                
-                let html = `<h4>📊 Accounts (${data.records.length} found)</h4>`;
-                data.records.forEach(account => {
-                    html += `
-                        <div class="data-card">
-                            <h3>${account.Name}</h3>
-                            <p><strong>Type:</strong> ${account.Type || 'Not specified'}</p>
-                            <p><strong>Industry:</strong> ${account.Industry || 'Not specified'}</p>
-                            <p><strong>Phone:</strong> ${account.Phone || 'Not specified'}</p>
-                            <p><strong>ID:</strong> ${account.Id}</p>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('accountsData').innerHTML = html;
-                showStatus('✅ Accounts loaded successfully!', 'success');
-            } catch (error) {
-                showStatus(`❌ Failed to load accounts: ${error.message}`, 'error');
-            }
+        function showApiResult(message, type) {
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${type}`;
+            resultDiv.textContent = message;
+            
+            const container = document.getElementById('apiResults');
+            container.innerHTML = '';
+            container.appendChild(resultDiv);
         }
 
-        async function getContacts() {
-            try {
-                showStatus('🔄 Loading contacts...', 'info');
-                const data = await salesforceApi('/services/data/v58.0/query/?q=SELECT Id, FirstName, LastName, Email, Account.Name FROM Contact LIMIT 20');
-                
-                let html = `<h4>👥 Contacts (${data.records.length} found)</h4>`;
-                data.records.forEach(contact => {
-                    html += `
-                        <div class="data-card">
-                            <h3>${contact.FirstName} ${contact.LastName}</h3>
-                            <p><strong>Email:</strong> ${contact.Email || 'Not specified'}</p>
-                            <p><strong>Account:</strong> ${contact.Account?.Name || 'Not specified'}</p>
-                            <p><strong>ID:</strong> ${contact.Id}</p>
-                        </div>
-                    `;
-                });
-                
-                document.getElementById('contactsData').innerHTML = html;
-                showStatus('✅ Contacts loaded successfully!', 'success');
-            } catch (error) {
-                showStatus(`❌ Failed to load contacts: ${error.message}`, 'error');
-            }
-        }
-
-        async function createAccount() {
-            const name = document.getElementById('newAccountName').value;
-            const industry = document.getElementById('newAccountIndustry').value;
-            
-            if (!name) {
-                showStatus('❌ Account name is required', 'error');
-                return;
-            }
-            
-            try {
-                const result = await salesforceApi('/services/data/v58.0/sobjects/Account', 'POST', {
-                    Name: name,
-                    Industry: industry,
-                    Type: 'Prospect'
-                });
-                
-                document.getElementById('createResults').innerHTML = `
-                    <div class="data-card">
-                        <h3>✅ Account Created</h3>
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Industry:</strong> ${industry}</p>
-                        <p><strong>ID:</strong> ${result.id}</p>
-                    </div>
-                `;
-                
-                // Clear inputs
-                document.getElementById('newAccountName').value = '';
-                document.getElementById('newAccountIndustry').value = '';
-                
-                showStatus('✅ Account created successfully!', 'success');
-            } catch (error) {
-                showStatus(`❌ Failed to create account: ${error.message}`, 'error');
-            }
-        }
-
-        async function createContact() {
-            const firstName = document.getElementById('newContactFirst').value;
-            const lastName = document.getElementById('newContactLast').value;
-            const email = document.getElementById('newContactEmail').value;
-            
-            if (!firstName || !lastName) {
-                showStatus('❌ First and last name are required', 'error');
-                return;
-            }
-            
-            try {
-                const result = await salesforceApi('/services/data/v58.0/sobjects/Contact', 'POST', {
-                    FirstName: firstName,
-                    LastName: lastName,
-                    Email: email
-                });
-                
-                document.getElementById('createResults').innerHTML = `
-                    <div class="data-card">
-                        <h3>✅ Contact Created</h3>
-                        <p><strong>Name:</strong> ${firstName} ${lastName}</p>
-                        <p><strong>Email:</strong> ${email}</p>
-                        <p><strong>ID:</strong> ${result.id}</p>
-                    </div>
-                `;
-                
-                // Clear inputs
-                document.getElementById('newContactFirst').value = '';
-                document.getElementById('newContactLast').value = '';
-                document.getElementById('newContactEmail').value = '';
-                
-                showStatus('✅ Contact created successfully!', 'success');
-            } catch (error) {
-                showStatus(`❌ Failed to create contact: ${error.message}`, 'error');
-            }
-        }
-
-        async function salesforceApi(endpoint, method = 'GET', body = null) {
-            const url = instanceUrl + endpoint;
-            
-            const options = {
-                method: method,
-                headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json'
-                }
-            };
-            
-            if (body) {
-                options.body = JSON.stringify(body);
-            }
-            
-            const response = await fetch(url, options);
-            
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error[0]?.message || `HTTP ${response.status}`);
-            }
-            
-            return await response.json();
-        }
-
-        function showTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function logout() {
+        function startOver() {
             accessToken = '';
             instanceUrl = '';
-            refreshToken = '';
-            
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('appSection').classList.add('hidden');
-            
-            showStatus('✅ Logged out successfully', 'success');
+            document.getElementById('successSection').classList.add('hidden');
+            document.getElementById('statusMessages').innerHTML = '';
+            document.getElementById('clientId').value = '';
         }
 
         function showStatus(message, type) {
             const statusDiv = document.createElement('div');
             statusDiv.className = `status ${type}`;
-            statusDiv.style.whiteSpace = 'pre-wrap';
             statusDiv.textContent = message;
             
-            const authStatus = document.getElementById('authStatus');
-            if (authStatus) {
-                authStatus.appendChild(statusDiv);
-                
+            const container = document.getElementById('statusMessages');
+            container.appendChild(statusDiv);
+            
+            if (type === 'info') {
                 setTimeout(() => {
                     if (statusDiv.parentNode) {
                         statusDiv.remove();
                     }
-                }, type === 'info' ? 5000 : 10000);
+                }, 10000);
             }
         }
     </script>
