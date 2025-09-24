@@ -3,554 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Salesforce Integration Hub</title>
+    <title>Salesforce Connection Diagnostic</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
             padding: 20px;
+            background: #f5f5f5;
         }
         
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-            overflow: hidden;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
         .header {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            padding: 40px;
             text-align: center;
-            color: white;
+            color: #dc3545;
+            margin-bottom: 30px;
         }
         
-        .header h1 {
-            font-size: 3em;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .status-bar {
-            background: #28a745;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        
-        .main-content {
-            padding: 40px;
-        }
-        
-        .auth-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .oauth-form {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            border-left: 5px solid #007cff;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .form-group {
+        .diagnostic-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 20px;
             margin: 20px 0;
-            text-align: left;
         }
         
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #007cff;
-            box-shadow: 0 0 0 4px rgba(0, 124, 255, 0.1);
+        .test-section {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
         }
         
         .btn {
-            background: linear-gradient(135deg, #007cff, #0056b3);
+            background: #007cff;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin: 8px;
-            text-decoration: none;
-            display: inline-block;
+            font-weight: bold;
+            margin: 5px;
         }
         
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 124, 255, 0.3);
+            background: #0056b3;
         }
         
         .btn-success {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: #28a745;
         }
         
         .btn-warning {
-            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            background: #ffc107;
+            color: #333;
         }
         
         .btn-danger {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-        }
-        
-        .btn-large {
-            padding: 20px 40px;
-            font-size: 18px;
-        }
-        
-        .tabs {
-            display: flex;
-            background: #f8f9fa;
-            border-radius: 15px;
-            margin: 30px 0;
-            overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .tab {
-            flex: 1;
-            padding: 20px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .tab.active {
-            background: #007cff;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0, 124, 255, 0.3);
-        }
-        
-        .tab-content {
-            display: none;
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .user-info {
-            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 25px 0;
-            border-left: 5px solid #2196f3;
-        }
-        
-        .data-card {
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 15px 0;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .data-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-        }
-        
-        .data-card h3 {
-            color: #007cff;
-            margin-bottom: 15px;
-            font-size: 1.4em;
+            background: #dc3545;
         }
         
         .status {
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 5px;
             margin: 15px 0;
-            font-weight: 600;
+            font-weight: bold;
             white-space: pre-wrap;
+            font-family: monospace;
         }
         
         .success {
             background: #d4edda;
             color: #155724;
-            border: 1px solid #c3e6cb;
         }
         
         .error {
             background: #f8d7da;
             color: #721c24;
-            border: 1px solid #f5c6cb;
         }
         
         .info {
             background: #d1ecf1;
             color: #0c5460;
-            border: 1px solid #bee5eb;
         }
         
-        .hidden {
-            display: none !important;
+        .debug {
+            background: #263238;
+            color: #4fc3f7;
+            font-size: 12px;
         }
         
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin: 25px 0;
-        }
-        
-        .create-form {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            border: 2px solid #e9ecef;
-            margin: 20px 0;
-        }
-        
-        .create-form h4 {
-            color: #495057;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 15px;
+        .form-group {
             margin: 15px 0;
         }
         
-        .form-row > * {
-            flex: 1;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 25px 0;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2.5em;
+        label {
+            display: block;
             font-weight: bold;
             margin-bottom: 5px;
         }
         
-        .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
         }
         
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .main-content {
-                padding: 20px;
-            }
-            
-            .tabs {
-                flex-direction: column;
-            }
-            
-            .form-row {
-                flex-direction: column;
-            }
+        .hidden {
+            display: none;
+        }
+        
+        .token-display {
+            background: #263238;
+            color: #4fc3f7;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="status-bar">
-            OAuth Configuration Verified - API Scope Working
-        </div>
-        
         <div class="header">
-            <h1>Salesforce Integration Hub</h1>
-            <p>Complete CRM Management Platform</p>
+            <h1>🔧 Salesforce API Connection Diagnostic</h1>
+            <p>Troubleshooting "Failed to fetch" errors</p>
         </div>
         
-        <div class="main-content">
-            <!-- Authentication Section -->
-            <div class="auth-section" id="authSection">
-                <h2>Connect to Salesforce</h2>
-                <div class="oauth-form">
-                    <div class="form-group">
-                        <label for="environment">Environment:</label>
-                        <select id="environment">
-                            <option value="https://login.salesforce.com">Production</option>
-                            <option value="https://test.salesforce.com">Sandbox</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="clientId">Consumer Key:</label>
-                        <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;">
-                    </div>
-                    
-                    <button class="btn btn-large" onclick="connectToSalesforce()">
-                        Connect with Salesforce
-                    </button>
-                </div>
-                
-                <div id="authStatus"></div>
+        <!-- Connection Status -->
+        <div class="diagnostic-section">
+            <h3>📊 Current Connection Status</h3>
+            <div id="connectionStatus">
+                <p><strong>Access Token:</strong> <span id="tokenStatus">Not connected</span></p>
+                <p><strong>Instance URL:</strong> <span id="instanceStatus">Not available</span></p>
+                <p><strong>Token Length:</strong> <span id="tokenLength">0</span></p>
+                <p><strong>Connected Time:</strong> <span id="connectedTime">Never</span></p>
             </div>
             
-            <!-- Main Application -->
-            <div class="hidden" id="appSection">
-                <div class="user-info" id="userInfo">
-                    <h3>Connected User</h3>
-                    <div id="userDetails">Loading user information...</div>
-                </div>
-                
-                <!-- Statistics Dashboard -->
-                <div class="stats-grid" id="statsGrid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="accountCount">-</div>
-                        <div class="stat-label">Total Accounts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="contactCount">-</div>
-                        <div class="stat-label">Total Contacts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="opportunityCount">-</div>
-                        <div class="stat-label">Opportunities</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="leadCount">-</div>
-                        <div class="stat-label">Total Leads</div>
-                    </div>
-                </div>
-                
-                <!-- Navigation Tabs -->
-                <div class="tabs">
-                    <button class="tab active" onclick="showTab('accounts')">Accounts</button>
-                    <button class="tab" onclick="showTab('contacts')">Contacts</button>
-                    <button class="tab" onclick="showTab('opportunities')">Opportunities</button>
-                    <button class="tab" onclick="showTab('create')">Create Records</button>
-                </div>
-                
-                <!-- Accounts Tab -->
-                <div class="tab-content active" id="accountsTab">
-                    <h3>Account Management</h3>
-                    <div style="text-align: center; margin: 20px 0;">
-                        <button class="btn" onclick="loadAccounts()">Load Accounts</button>
-                        <button class="btn btn-success" onclick="showAccountForm()">Create Account</button>
-                        <button class="btn btn-warning" onclick="searchAccounts()">Search</button>
-                    </div>
-                    
-                    <div id="accountForm" class="create-form hidden">
-                        <h4>Create New Account</h4>
-                        <div class="form-row">
-                            <input type="text" id="accountName" placeholder="Account Name *" required>
-                            <select id="accountType">
-                                <option value="">Select Type</option>
-                                <option value="Customer - Direct">Customer - Direct</option>
-                                <option value="Customer - Channel">Customer - Channel</option>
-                                <option value="Prospect">Prospect</option>
-                                <option value="Partner">Partner</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <input type="text" id="accountIndustry" placeholder="Industry">
-                            <input type="tel" id="accountPhone" placeholder="Phone">
-                        </div>
-                        <div class="form-row">
-                            <input type="url" id="accountWebsite" placeholder="Website">
-                            <input type="text" id="accountCity" placeholder="City">
-                        </div>
-                        <button class="btn btn-success" onclick="createAccount()">Create Account</button>
-                        <button class="btn" onclick="hideAccountForm()">Cancel</button>
-                    </div>
-                    
-                    <div id="accountsData" class="grid"></div>
-                </div>
-                
-                <!-- Contacts Tab -->
-                <div class="tab-content" id="contactsTab">
-                    <h3>Contact Management</h3>
-                    <div style="text-align: center; margin: 20px 0;">
-                        <button class="btn" onclick="loadContacts()">Load Contacts</button>
-                        <button class="btn btn-success" onclick="showContactForm()">Create Contact</button>
-                    </div>
-                    
-                    <div id="contactForm" class="create-form hidden">
-                        <h4>Create New Contact</h4>
-                        <div class="form-row">
-                            <input type="text" id="contactFirstName" placeholder="First Name *" required>
-                            <input type="text" id="contactLastName" placeholder="Last Name *" required>
-                        </div>
-                        <div class="form-row">
-                            <input type="email" id="contactEmail" placeholder="Email">
-                            <input type="tel" id="contactPhone" placeholder="Phone">
-                        </div>
-                        <div class="form-row">
-                            <input type="text" id="contactTitle" placeholder="Job Title">
-                            <select id="contactAccount">
-                                <option value="">Select Account</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success" onclick="createContact()">Create Contact</button>
-                        <button class="btn" onclick="hideContactForm()">Cancel</button>
-                    </div>
-                    
-                    <div id="contactsData" class="grid"></div>
-                </div>
-                
-                <!-- Opportunities Tab -->
-                <div class="tab-content" id="opportunitiesTab">
-                    <h3>Opportunity Management</h3>
-                    <div style="text-align: center; margin: 20px 0;">
-                        <button class="btn" onclick="loadOpportunities()">Load Opportunities</button>
-                        <button class="btn btn-success" onclick="showOpportunityForm()">Create Opportunity</button>
-                    </div>
-                    
-                    <div id="opportunityForm" class="create-form hidden">
-                        <h4>Create New Opportunity</h4>
-                        <div class="form-row">
-                            <input type="text" id="opportunityName" placeholder="Opportunity Name *" required>
-                            <select id="opportunityStage">
-                                <option value="">Select Stage</option>
-                                <option value="Prospecting">Prospecting</option>
-                                <option value="Qualification">Qualification</option>
-                                <option value="Proposal/Price Quote">Proposal/Price Quote</option>
-                                <option value="Negotiation/Review">Negotiation/Review</option>
-                                <option value="Closed Won">Closed Won</option>
-                                <option value="Closed Lost">Closed Lost</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <input type="number" id="opportunityAmount" placeholder="Amount" step="0.01">
-                            <input type="date" id="opportunityCloseDate" placeholder="Close Date">
-                        </div>
-                        <div class="form-row">
-                            <select id="opportunityAccount">
-                                <option value="">Select Account</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success" onclick="createOpportunity()">Create Opportunity</button>
-                        <button class="btn" onclick="hideOpportunityForm()">Cancel</button>
-                    </div>
-                    
-                    <div id="opportunitiesData" class="grid"></div>
-                </div>
-                
-                <!-- Create Records Tab -->
-                <div class="tab-content" id="createTab">
-                    <h3>Quick Create</h3>
-                    <div class="grid">
-                        <div class="create-form">
-                            <h4>Quick Account</h4>
-                            <input type="text" id="quickAccountName" placeholder="Account Name">
-                            <input type="text" id="quickAccountIndustry" placeholder="Industry">
-                            <button class="btn btn-success" onclick="quickCreateAccount()">Create Account</button>
-                        </div>
-                        
-                        <div class="create-form">
-                            <h4>Quick Contact</h4>
-                            <input type="text" id="quickContactFirst" placeholder="First Name">
-                            <input type="text" id="quickContactLast" placeholder="Last Name">
-                            <input type="email" id="quickContactEmail" placeholder="Email">
-                            <button class="btn btn-success" onclick="quickCreateContact()">Create Contact</button>
-                        </div>
-                        
-                        <div class="create-form">
-                            <h4>Quick Lead</h4>
-                            <input type="text" id="quickLeadFirst" placeholder="First Name">
-                            <input type="text" id="quickLeadLast" placeholder="Last Name">
-                            <input type="text" id="quickLeadCompany" placeholder="Company">
-                            <input type="email" id="quickLeadEmail" placeholder="Email">
-                            <button class="btn btn-success" onclick="quickCreateLead()">Create Lead</button>
-                        </div>
-                        
-                        <div class="create-form">
-                            <h4>Quick Opportunity</h4>
-                            <input type="text" id="quickOppName" placeholder="Opportunity Name">
-                            <input type="number" id="quickOppAmount" placeholder="Amount" step="0.01">
-                            <select id="quickOppStage">
-                                <option value="Prospecting">Prospecting</option>
-                                <option value="Qualification">Qualification</option>
-                                <option value="Proposal/Price Quote">Proposal</option>
-                            </select>
-                            <button class="btn btn-success" onclick="quickCreateOpportunity()">Create Opportunity</button>
-                        </div>
-                    </div>
-                    
-                    <div id="quickCreateResults"></div>
-                </div>
-                
-                <!-- Logout Button -->
-                <div style="text-align: center; margin: 40px 0;">
-                    <button class="btn btn-danger btn-large" onclick="logout()">
-                        Disconnect from Salesforce
-                    </button>
-                </div>
+            <button class="btn" onclick="checkTokenStatus()">🔍 Check Token Status</button>
+            <button class="btn btn-warning" onclick="showTokenDetails()">👁️ Show Token Details</button>
+        </div>
+        
+        <!-- Authentication -->
+        <div class="test-section" id="authSection">
+            <h3>🔐 Re-authenticate</h3>
+            
+            <div class="form-group">
+                <label for="environment">Environment:</label>
+                <select id="environment">
+                    <option value="https://login.salesforce.com">Production</option>
+                    <option value="https://test.salesforce.com">Sandbox</option>
+                </select>
             </div>
+            
+            <div class="form-group">
+                <label for="clientId">Consumer Key:</label>
+                <input type="text" id="clientId" placeholder="3MVG9..." style="font-family: monospace;">
+            </div>
+            
+            <button class="btn btn-success" onclick="connectToSalesforce()">🔗 Connect to Salesforce</button>
+        </div>
+        
+        <!-- API Tests -->
+        <div class="test-section hidden" id="testSection">
+            <h3>🧪 API Connection Tests</h3>
+            
+            <p>Run these tests in order to identify the problem:</p>
+            
+            <button class="btn" onclick="testBasicConnection()">1. Test Basic Connection</button>
+            <button class="btn" onclick="testApiVersions()">2. Test API Versions</button>
+            <button class="btn" onclick="testUserInfo()">3. Test User Info</button>
+            <button class="btn" onclick="testSimpleQuery()">4. Test Simple Query</button>
+            <button class="btn" onclick="testAccountQuery()">5. Test Account Query</button>
+            <button class="btn" onclick="testCreateRecord()">6. Test Create Record</button>
+            
+            <div id="testResults"></div>
+        </div>
+        
+        <!-- Token Details -->
+        <div class="diagnostic-section hidden" id="tokenDetails">
+            <h3>🔑 Access Token Analysis</h3>
+            <div id="tokenAnalysis"></div>
+        </div>
+        
+        <!-- Debug Output -->
+        <div class="test-section">
+            <h3>📋 Debug Log</h3>
+            <div id="debugLog"></div>
         </div>
     </div>
 
     <script>
-        // Global variables
         var accessToken = '';
         var instanceUrl = '';
-        var accounts = [];
+        var connectedAt = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             checkOAuthReturn();
+            updateConnectionStatus();
         });
 
         function checkOAuthReturn() {
@@ -563,9 +225,16 @@
             if (token && instance) {
                 accessToken = token;
                 instanceUrl = instance;
-                showApp();
-                loadUserInfo();
-                loadDashboardStats();
+                connectedAt = new Date();
+                
+                updateConnectionStatus();
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('testSection').classList.remove('hidden');
+                
+                addDebugLog('✅ OAuth successful - Token received');
+                addDebugLog('🔗 Instance URL: ' + instance);
+                addDebugLog('⏰ Connected at: ' + connectedAt.toLocaleString());
+                
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         }
@@ -575,453 +244,220 @@
             var environment = document.getElementById('environment').value;
             
             if (!clientId) {
-                showStatus('Please enter your Consumer Key', 'error', 'authStatus');
+                addDebugLog('❌ No Consumer Key provided', 'error');
                 return;
             }
             
             var params = new URLSearchParams({
                 response_type: 'token',
                 client_id: clientId,
-                redirect_uri: 'https://sanjaynair42.github.io/claude1/',
+                redirect_uri: window.location.origin + window.location.pathname,
                 scope: 'api',
                 state: Date.now().toString()
             });
             
+            addDebugLog('🔄 Starting OAuth flow...');
+            addDebugLog('📤 Redirect URL: ' + environment + '/services/oauth2/authorize');
+            
             window.location.href = environment + '/services/oauth2/authorize?' + params;
         }
 
-        function showApp() {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('appSection').classList.remove('hidden');
+        function updateConnectionStatus() {
+            document.getElementById('tokenStatus').textContent = accessToken ? 'Connected' : 'Not connected';
+            document.getElementById('instanceStatus').textContent = instanceUrl || 'Not available';
+            document.getElementById('tokenLength').textContent = accessToken ? accessToken.length + ' chars' : '0';
+            document.getElementById('connectedTime').textContent = connectedAt ? connectedAt.toLocaleString() : 'Never';
+            
+            if (accessToken) {
+                document.getElementById('tokenStatus').style.color = '#28a745';
+                document.getElementById('instanceStatus').style.color = '#28a745';
+            } else {
+                document.getElementById('tokenStatus').style.color = '#dc3545';
+                document.getElementById('instanceStatus').style.color = '#dc3545';
+            }
         }
 
-        function loadUserInfo() {
-            fetch(instanceUrl + '/services/oauth2/userinfo', {
+        function checkTokenStatus() {
+            if (!accessToken) {
+                addDebugLog('❌ No access token available', 'error');
+                return;
+            }
+            
+            var now = new Date();
+            var timeSinceConnection = connectedAt ? (now - connectedAt) / 1000 / 60 : 0; // minutes
+            
+            addDebugLog('🔍 Token Status Check:', 'info');
+            addDebugLog('   Token exists: ' + (accessToken ? 'YES' : 'NO'));
+            addDebugLog('   Token length: ' + accessToken.length + ' characters');
+            addDebugLog('   Time since connection: ' + Math.round(timeSinceConnection) + ' minutes');
+            addDebugLog('   Instance URL: ' + (instanceUrl || 'Missing'));
+            
+            if (timeSinceConnection > 60) {
+                addDebugLog('⚠️ Token may have expired (connected over 1 hour ago)', 'error');
+            }
+        }
+
+        function showTokenDetails() {
+            if (!accessToken) {
+                addDebugLog('❌ No access token to analyze', 'error');
+                return;
+            }
+            
+            var tokenParts = accessToken.split('.');
+            var analysis = '🔑 Access Token Analysis:\n\n';
+            analysis += 'Full token: ' + accessToken.substring(0, 50) + '...\n';
+            analysis += 'Token format: ' + (tokenParts.length > 1 ? 'JWT (multi-part)' : 'Simple token') + '\n';
+            analysis += 'Character count: ' + accessToken.length + '\n';
+            analysis += 'Starts with: ' + accessToken.substring(0, 10) + '\n';
+            
+            document.getElementById('tokenAnalysis').innerHTML = '<div class="token-display">' + analysis + '</div>';
+            document.getElementById('tokenDetails').classList.remove('hidden');
+        }
+
+        // API Test Functions
+        function testBasicConnection() {
+            if (!accessToken) {
+                addDebugLog('❌ Test 1 Failed: No access token', 'error');
+                return;
+            }
+            
+            addDebugLog('🧪 Test 1: Basic Connection Test', 'info');
+            addDebugLog('📤 Testing: ' + instanceUrl);
+            
+            fetch(instanceUrl + '/services/data/', {
+                method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + accessToken
                 }
             })
             .then(function(response) {
+                addDebugLog('📥 Response Status: ' + response.status + ' ' + response.statusText);
+                
                 if (response.ok) {
                     return response.json();
                 } else {
-                    // Fallback if userinfo not available
-                    return { name: 'Connected User', email: 'API Access Confirmed', organization_id: 'Available' };
+                    throw new Error('HTTP ' + response.status + ': ' + response.statusText);
                 }
             })
-            .then(function(userInfo) {
-                document.getElementById('userDetails').innerHTML = 
-                    '<div class="data-card">' +
-                    '<strong>Name:</strong> ' + (userInfo.name || 'Connected User') + '<br>' +
-                    '<strong>Email:</strong> ' + (userInfo.email || 'API Access Confirmed') + '<br>' +
-                    '<strong>Instance:</strong> ' + instanceUrl +
-                    '</div>';
+            .then(function(data) {
+                addDebugLog('✅ Test 1 PASSED: Basic connection works');
+                addDebugLog('📊 Available API versions: ' + data.length);
+                if (data.length > 0) {
+                    addDebugLog('📋 Latest version: ' + data[data.length - 1].version);
+                }
             })
             .catch(function(error) {
-                document.getElementById('userDetails').innerHTML = 
-                    '<div class="data-card">' +
-                    '<strong>Status:</strong> Connected to Salesforce<br>' +
-                    '<strong>Instance:</strong> ' + instanceUrl + '<br>' +
-                    '<strong>Access:</strong> API Enabled' +
-                    '</div>';
+                addDebugLog('❌ Test 1 FAILED: ' + error.message, 'error');
+                
+                if (error.message.includes('Failed to fetch')) {
+                    addDebugLog('🔍 This suggests a network or CORS issue', 'error');
+                } else if (error.message.includes('401')) {
+                    addDebugLog('🔍 Token may be invalid or expired', 'error');
+                } else if (error.message.includes('403')) {
+                    addDebugLog('🔍 Token lacks necessary permissions', 'error');
+                }
             });
         }
 
-        function loadDashboardStats() {
-            Promise.all([
-                salesforceApi('/services/data/v58.0/query/?q=SELECT COUNT() FROM Account'),
-                salesforceApi('/services/data/v58.0/query/?q=SELECT COUNT() FROM Contact'),
-                salesforceApi('/services/data/v58.0/query/?q=SELECT COUNT() FROM Opportunity'),
-                salesforceApi('/services/data/v58.0/query/?q=SELECT COUNT() FROM Lead')
-            ]).then(function(results) {
-                document.getElementById('accountCount').textContent = results[0].totalSize || 0;
-                document.getElementById('contactCount').textContent = results[1].totalSize || 0;
-                document.getElementById('opportunityCount').textContent = results[2].totalSize || 0;
-                document.getElementById('leadCount').textContent = results[3].totalSize || 0;
-            }).catch(function(error) {
-                console.error('Failed to load dashboard stats:', error);
-            });
-        }
-
-        function loadAccounts() {
-            showStatus('Loading accounts...', 'info');
-            salesforceApi('/services/data/v58.0/query/?q=SELECT Id, Name, Type, Industry, Phone, Website, BillingCity FROM Account ORDER BY Name LIMIT 50')
+        function testApiVersions() {
+            addDebugLog('🧪 Test 2: API Versions Test', 'info');
+            
+            makeApiCall('/services/data/', 'GET')
                 .then(function(data) {
-                    accounts = data.records;
-                    
-                    var html = '';
-                    accounts.forEach(function(account) {
-                        html += 
-                            '<div class="data-card">' +
-                            '<h3>' + account.Name + '</h3>' +
-                            '<p><strong>Type:</strong> ' + (account.Type || 'Not specified') + '</p>' +
-                            '<p><strong>Industry:</strong> ' + (account.Industry || 'Not specified') + '</p>' +
-                            '<p><strong>Phone:</strong> ' + (account.Phone || 'Not specified') + '</p>' +
-                            '<p><strong>Website:</strong> ' + (account.Website || 'Not specified') + '</p>' +
-                            '<p><strong>City:</strong> ' + (account.BillingCity || 'Not specified') + '</p>' +
-                            '<p><strong>ID:</strong> <code>' + account.Id + '</code></p>' +
-                            '</div>';
-                    });
-                    
-                    document.getElementById('accountsData').innerHTML = html;
-                    updateAccountDropdowns();
-                    showStatus('Accounts loaded successfully!', 'success');
+                    addDebugLog('✅ Test 2 PASSED: API versions accessible');
+                    addDebugLog('📊 Found ' + data.length + ' API versions');
                 })
                 .catch(function(error) {
-                    showStatus('Failed to load accounts: ' + error.message, 'error');
+                    addDebugLog('❌ Test 2 FAILED: ' + error.message, 'error');
                 });
         }
 
-        function loadContacts() {
-            showStatus('Loading contacts...', 'info');
-            salesforceApi('/services/data/v58.0/query/?q=SELECT Id, FirstName, LastName, Email, Phone, Title, Account.Name FROM Contact ORDER BY LastName LIMIT 50')
+        function testUserInfo() {
+            addDebugLog('🧪 Test 3: User Info Test', 'info');
+            
+            makeApiCall('/services/oauth2/userinfo', 'GET')
                 .then(function(data) {
-                    var html = '';
-                    data.records.forEach(function(contact) {
-                        html += 
-                            '<div class="data-card">' +
-                            '<h3>' + contact.FirstName + ' ' + contact.LastName + '</h3>' +
-                            '<p><strong>Email:</strong> ' + (contact.Email || 'Not specified') + '</p>' +
-                            '<p><strong>Phone:</strong> ' + (contact.Phone || 'Not specified') + '</p>' +
-                            '<p><strong>Title:</strong> ' + (contact.Title || 'Not specified') + '</p>' +
-                            '<p><strong>Account:</strong> ' + (contact.Account && contact.Account.Name || 'Not specified') + '</p>' +
-                            '<p><strong>ID:</strong> <code>' + contact.Id + '</code></p>' +
-                            '</div>';
-                    });
-                    
-                    document.getElementById('contactsData').innerHTML = html;
-                    showStatus('Contacts loaded successfully!', 'success');
+                    addDebugLog('✅ Test 3 PASSED: User info accessible');
+                    addDebugLog('👤 User: ' + (data.name || 'Unknown'));
                 })
                 .catch(function(error) {
-                    showStatus('Failed to load contacts: ' + error.message, 'error');
+                    addDebugLog('⚠️ Test 3 WARNING: User info not accessible');
+                    addDebugLog('🔍 This is normal with limited scopes');
                 });
         }
 
-        function loadOpportunities() {
-            showStatus('Loading opportunities...', 'info');
-            salesforceApi('/services/data/v58.0/query/?q=SELECT Id, Name, StageName, Amount, CloseDate, Account.Name FROM Opportunity ORDER BY CloseDate DESC LIMIT 50')
+        function testSimpleQuery() {
+            addDebugLog('🧪 Test 4: Simple Query Test', 'info');
+            
+            makeApiCall('/services/data/v58.0/query/?q=SELECT+Id+FROM+User+LIMIT+1', 'GET')
                 .then(function(data) {
-                    var html = '';
-                    data.records.forEach(function(opp) {
-                        html += 
-                            '<div class="data-card">' +
-                            '<h3>' + opp.Name + '</h3>' +
-                            '<p><strong>Stage:</strong> ' + opp.StageName + '</p>' +
-                            '<p><strong>Amount:</strong> $' + (opp.Amount ? opp.Amount.toLocaleString() : '0') + '</p>' +
-                            '<p><strong>Close Date:</strong> ' + (opp.CloseDate ? new Date(opp.CloseDate).toLocaleDateString() : 'Not set') + '</p>' +
-                            '<p><strong>Account:</strong> ' + (opp.Account && opp.Account.Name || 'Not specified') + '</p>' +
-                            '<p><strong>ID:</strong> <code>' + opp.Id + '</code></p>' +
-                            '</div>';
-                    });
+                    addDebugLog('✅ Test 4 PASSED: Basic SOQL query works');
+                    addDebugLog('📊 Records found: ' + data.totalSize);
+                })
+                .catch(function(error) {
+                    addDebugLog('❌ Test 4 FAILED: ' + error.message, 'error');
                     
-                    document.getElementById('opportunitiesData').innerHTML = html;
-                    showStatus('Opportunities loaded successfully!', 'success');
-                })
-                .catch(function(error) {
-                    showStatus('Failed to load opportunities: ' + error.message, 'error');
+                    if (error.message.includes('INVALID_FIELD')) {
+                        addDebugLog('🔍 Field access issue - trying alternative', 'info');
+                    }
                 });
         }
 
-        // Create functions (simplified for space - same pattern as before)
-        function createAccount() {
-            var name = document.getElementById('accountName').value;
-            if (!name) {
-                showStatus('Account name is required', 'error');
-                return;
-            }
+        function testAccountQuery() {
+            addDebugLog('🧪 Test 5: Account Query Test', 'info');
             
-            var accountData = {
-                Name: name,
-                Type: document.getElementById('accountType').value,
-                Industry: document.getElementById('accountIndustry').value,
-                Phone: document.getElementById('accountPhone').value,
-                Website: document.getElementById('accountWebsite').value,
-                BillingCity: document.getElementById('accountCity').value
-            };
-            
-            salesforceApi('/services/data/v58.0/sobjects/Account', 'POST', accountData)
-                .then(function(result) {
-                    showStatus('Account created successfully! ID: ' + result.id, 'success');
-                    hideAccountForm();
-                    loadAccounts();
-                    loadDashboardStats();
+            makeApiCall('/services/data/v58.0/query/?q=SELECT+Id,Name+FROM+Account+LIMIT+5', 'GET')
+                .then(function(data) {
+                    addDebugLog('✅ Test 5 PASSED: Account query works');
+                    addDebugLog('📊 Account count: ' + data.totalSize);
+                    if (data.records.length > 0) {
+                        addDebugLog('📋 First account: ' + data.records[0].Name);
+                    }
                 })
                 .catch(function(error) {
-                    showStatus('Failed to create account: ' + error.message, 'error');
+                    addDebugLog('❌ Test 5 FAILED: ' + error.message, 'error');
+                    
+                    if (error.message.includes('INSUFFICIENT_ACCESS')) {
+                        addDebugLog('🔍 Insufficient permissions for Account object', 'error');
+                    }
                 });
         }
 
-        function createContact() {
-            var firstName = document.getElementById('contactFirstName').value;
-            var lastName = document.getElementById('contactLastName').value;
+        function testCreateRecord() {
+            addDebugLog('🧪 Test 6: Create Record Test', 'info');
             
-            if (!firstName || !lastName) {
-                showStatus('First and last name are required', 'error');
-                return;
-            }
-            
-            var contactData = {
-                FirstName: firstName,
-                LastName: lastName,
-                Email: document.getElementById('contactEmail').value,
-                Phone: document.getElementById('contactPhone').value,
-                Title: document.getElementById('contactTitle').value,
-                AccountId: document.getElementById('contactAccount').value
-            };
-            
-            salesforceApi('/services/data/v58.0/sobjects/Contact', 'POST', contactData)
-                .then(function(result) {
-                    showStatus('Contact created successfully! ID: ' + result.id, 'success');
-                    hideContactForm();
-                    loadContacts();
-                    loadDashboardStats();
-                })
-                .catch(function(error) {
-                    showStatus('Failed to create contact: ' + error.message, 'error');
-                });
-        }
-
-        function createOpportunity() {
-            var name = document.getElementById('opportunityName').value;
-            var stage = document.getElementById('opportunityStage').value;
-            
-            if (!name || !stage) {
-                showStatus('Opportunity name and stage are required', 'error');
-                return;
-            }
-            
-            var opportunityData = {
-                Name: name,
-                StageName: stage,
-                Amount: document.getElementById('opportunityAmount').value ? parseFloat(document.getElementById('opportunityAmount').value) : null,
-                CloseDate: document.getElementById('opportunityCloseDate').value,
-                AccountId: document.getElementById('opportunityAccount').value
-            };
-            
-            salesforceApi('/services/data/v58.0/sobjects/Opportunity', 'POST', opportunityData)
-                .then(function(result) {
-                    showStatus('Opportunity created successfully! ID: ' + result.id, 'success');
-                    hideOpportunityForm();
-                    loadOpportunities();
-                    loadDashboardStats();
-                })
-                .catch(function(error) {
-                    showStatus('Failed to create opportunity: ' + error.message, 'error');
-                });
-        }
-
-        // Quick create functions
-        function quickCreateAccount() {
-            var name = document.getElementById('quickAccountName').value;
-            if (!name) {
-                showStatus('Account name is required', 'error', 'quickCreateResults');
-                return;
-            }
-            
-            var accountData = {
-                Name: name,
-                Industry: document.getElementById('quickAccountIndustry').value,
+            var testAccount = {
+                Name: 'Test Account ' + Date.now(),
                 Type: 'Prospect'
             };
             
-            salesforceApi('/services/data/v58.0/sobjects/Account', 'POST', accountData)
-                .then(function(result) {
-                    showStatus('Quick Account created! ID: ' + result.id, 'success', 'quickCreateResults');
-                    document.getElementById('quickAccountName').value = '';
-                    document.getElementById('quickAccountIndustry').value = '';
-                    loadDashboardStats();
-                })
-                .catch(function(error) {
-                    showStatus('Failed to create account: ' + error.message, 'error', 'quickCreateResults');
-                });
-        }
-
-        function quickCreateContact() {
-            var firstName = document.getElementById('quickContactFirst').value;
-            var lastName = document.getElementById('quickContactLast').value;
-            
-            if (!firstName || !lastName) {
-                showStatus('First and last name are required', 'error', 'quickCreateResults');
-                return;
-            }
-            
-            var contactData = {
-                FirstName: firstName,
-                LastName: lastName,
-                Email: document.getElementById('quickContactEmail').value
-            };
-            
-            salesforceApi('/services/data/v58.0/sobjects/Contact', 'POST', contactData)
-                .then(function(result) {
-                    showStatus('Quick Contact created! ID: ' + result.id, 'success', 'quickCreateResults');
-                    document.getElementById('quickContactFirst').value = '';
-                    document.getElementById('quickContactLast').value = '';
-                    document.getElementById('quickContactEmail').value = '';
-                    loadDashboardStats();
-                })
-                .catch(function(error) {
-                    showStatus('Failed to create contact: ' + error.message, 'error', 'quickCreateResults');
-                });
-        }
-
-        function quickCreateLead() {
-            var firstName = document.getElementById('quickLeadFirst').value;
-            var lastName = document.getElementById('quickLeadLast').value;
-            var company = document.getElementById('quickLeadCompany').value;
-            
-            if (!firstName || !lastName || !company) {
-                showStatus('First name, last name, and company are required', 'error', 'quickCreateResults');
-                return;
-            }
-            
-            var leadData = {
-                FirstName: firstName,
-                LastName: lastName,
-                Company: company,
-                Email: document.getElementById('quickLeadEmail').value,
-                Status: 'Open - Not Contacted'
-            };
-            
-            salesforceApi('/services/data/v58.0/sobjects/Lead', 'POST', leadData)
-                .then(function(result) {
-                    showStatus('Quick Lead created! ID: ' + result.id, 'success', 'quickCreateResults');
-                    document.getElementById('quickLeadFirst').value = '';
-                    document.getElementById('quickLeadLast').value = '';
-                    document.getElementById('quickLeadCompany').value = '';
-                    document.getElementById('quickLeadEmail').value = '';
-                    loadDashboardStats();
-                })
-                .catch(function(error) {
-                    showStatus('Failed to create lead: ' + error.message, 'error', 'quickCreateResults');
-                });
-        }
-
-        function quickCreateOpportunity() {
-            var name = document.getElementById('quickOppName').value;
-            if (!name) {
-                showStatus('Opportunity name is required', 'error', 'quickCreateResults');
-                return;
-            }
-            
-            var closeDate = new Date();
-            closeDate.setDate(closeDate.getDate() + 30);
-            
-            var opportunityData = {
-                Name: name,
-                StageName: document.getElementById('quickOppStage').value,
-                Amount: document.getElementById('quickOppAmount').value ? parseFloat(document.getElementById('quickOppAmount').value) : null,
-                CloseDate: closeDate.toISOString().split('T')[0]
-            };
-            
-            salesforceApi('/services/data/v58.0/sobjects/Opportunity', 'POST', opportunityData)
-                .then(function(result) {
-                    showStatus('Quick Opportunity created! ID: ' + result.id, 'success', 'quickCreateResults');
-                    document.getElementById('quickOppName').value = '';
-                    document.getElementById('quickOppAmount').value = '';
-                    loadDashboardStats();
-                })
-                .catch(function(error) {
-                    showStatus('Failed to create opportunity: ' + error.message, 'error', 'quickCreateResults');
-                });
-        }
-
-        function searchAccounts() {
-            var searchTerm = prompt('Enter search term for accounts:');
-            if (!searchTerm) return;
-            
-            showStatus('Searching accounts...', 'info');
-            salesforceApi('/services/data/v58.0/query/?q=SELECT Id, Name, Type, Industry, Phone FROM Account WHERE Name LIKE \'%' + searchTerm + '%\' LIMIT 20')
+            makeApiCall('/services/data/v58.0/sobjects/Account', 'POST', testAccount)
                 .then(function(data) {
-                    var html = '';
-                    data.records.forEach(function(account) {
-                        html += 
-                            '<div class="data-card">' +
-                            '<h3>' + account.Name + '</h3>' +
-                            '<p><strong>Type:</strong> ' + (account.Type || 'Not specified') + '</p>' +
-                            '<p><strong>Industry:</strong> ' + (account.Industry || 'Not specified') + '</p>' +
-                            '<p><strong>Phone:</strong> ' + (account.Phone || 'Not specified') + '</p>' +
-                            '<p><strong>ID:</strong> <code>' + account.Id + '</code></p>' +
-                            '</div>';
-                    });
+                    addDebugLog('✅ Test 6 PASSED: Create record works');
+                    addDebugLog('🆔 Created Account ID: ' + data.id);
                     
-                    document.getElementById('accountsData').innerHTML = html || '<p>No accounts found matching your search.</p>';
-                    showStatus('Found ' + data.records.length + ' accounts matching "' + searchTerm + '"', 'success');
+                    // Clean up - delete the test record
+                    makeApiCall('/services/data/v58.0/sobjects/Account/' + data.id, 'DELETE')
+                        .then(function() {
+                            addDebugLog('🧹 Test record cleaned up');
+                        })
+                        .catch(function() {
+                            addDebugLog('⚠️ Could not delete test record: ' + data.id);
+                        });
                 })
                 .catch(function(error) {
-                    showStatus('Search failed: ' + error.message, 'error');
+                    addDebugLog('❌ Test 6 FAILED: ' + error.message, 'error');
+                    
+                    if (error.message.includes('INSUFFICIENT_ACCESS')) {
+                        addDebugLog('🔍 No CREATE permission on Account object', 'error');
+                    } else if (error.message.includes('REQUIRED_FIELD_MISSING')) {
+                        addDebugLog('🔍 Missing required fields for Account creation', 'error');
+                    }
                 });
         }
 
-        // Form management functions
-        function showAccountForm() {
-            document.getElementById('accountForm').classList.remove('hidden');
-        }
-
-        function hideAccountForm() {
-            document.getElementById('accountForm').classList.add('hidden');
-            clearAccountForm();
-        }
-
-        function showContactForm() {
-            document.getElementById('contactForm').classList.remove('hidden');
-        }
-
-        function hideContactForm() {
-            document.getElementById('contactForm').classList.add('hidden');
-            clearContactForm();
-        }
-
-        function showOpportunityForm() {
-            document.getElementById('opportunityForm').classList.remove('hidden');
-        }
-
-        function hideOpportunityForm() {
-            document.getElementById('opportunityForm').classList.add('hidden');
-            clearOpportunityForm();
-        }
-
-        function clearAccountForm() {
-            document.getElementById('accountName').value = '';
-            document.getElementById('accountType').value = '';
-            document.getElementById('accountIndustry').value = '';
-            document.getElementById('accountPhone').value = '';
-            document.getElementById('accountWebsite').value = '';
-            document.getElementById('accountCity').value = '';
-        }
-
-        function clearContactForm() {
-            document.getElementById('contactFirstName').value = '';
-            document.getElementById('contactLastName').value = '';
-            document.getElementById('contactEmail').value = '';
-            document.getElementById('contactPhone').value = '';
-            document.getElementById('contactTitle').value = '';
-            document.getElementById('contactAccount').value = '';
-        }
-
-        function clearOpportunityForm() {
-            document.getElementById('opportunityName').value = '';
-            document.getElementById('opportunityStage').value = '';
-            document.getElementById('opportunityAmount').value = '';
-            document.getElementById('opportunityCloseDate').value = '';
-            document.getElementById('opportunityAccount').value = '';
-        }
-
-        function updateAccountDropdowns() {
-            var contactAccountSelect = document.getElementById('contactAccount');
-            var opportunityAccountSelect = document.getElementById('opportunityAccount');
-            
-            var selects = [contactAccountSelect, opportunityAccountSelect];
-            
-            selects.forEach(function(select) {
-                select.innerHTML = '<option value="">Select Account</option>';
-                accounts.forEach(function(account) {
-                    select.innerHTML += '<option value="' + account.Id + '">' + account.Name + '</option>';
-                });
-            });
-        }
-
-        // Utility functions
-        function salesforceApi(endpoint, method, body) {
+        // Utility Functions
+        function makeApiCall(endpoint, method, body) {
             method = method || 'GET';
             var url = instanceUrl + endpoint;
             
@@ -1037,67 +473,52 @@
                 options.body = JSON.stringify(body);
             }
             
+            addDebugLog('📤 API Call: ' + method + ' ' + endpoint);
+            
             return fetch(url, options)
                 .then(function(response) {
+                    addDebugLog('📥 Response: ' + response.status + ' ' + response.statusText);
+                    
                     if (!response.ok) {
-                        return response.json().then(function(error) {
-                            throw new Error(error[0] && error[0].message || 'HTTP ' + response.status);
+                        return response.text().then(function(errorText) {
+                            var errorMessage = 'HTTP ' + response.status;
+                            try {
+                                var errorJson = JSON.parse(errorText);
+                                if (errorJson[0] && errorJson[0].message) {
+                                    errorMessage = errorJson[0].message;
+                                }
+                            } catch (e) {
+                                errorMessage += ': ' + errorText.substring(0, 100);
+                            }
+                            throw new Error(errorMessage);
                         });
                     }
                     return response.json();
                 });
         }
 
-        function showTab(tabName) {
-            var tabContents = document.querySelectorAll('.tab-content');
-            var tabs = document.querySelectorAll('.tab');
+        function addDebugLog(message, type) {
+            type = type || 'info';
+            var timestamp = new Date().toLocaleTimeString();
+            var logEntry = '[' + timestamp + '] ' + message;
             
-            for (var i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove('active');
+            var logDiv = document.createElement('div');
+            logDiv.className = 'status ' + type;
+            logDiv.textContent = logEntry;
+            
+            var debugLog = document.getElementById('debugLog');
+            debugLog.appendChild(logDiv);
+            
+            // Keep only last 20 log entries
+            var logs = debugLog.querySelectorAll('.status');
+            if (logs.length > 20) {
+                logs[0].remove();
             }
             
-            for (var i = 0; i < tabs.length; i++) {
-                tabs[i].classList.remove('active');
-            }
+            // Scroll to bottom
+            debugLog.scrollTop = debugLog.scrollHeight;
             
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            event.target.classList.add('active');
-        }
-
-        function showStatus(message, type, containerId) {
-            containerId = containerId || 'accountsData';
-            var statusDiv = document.createElement('div');
-            statusDiv.className = 'status ' + type;
-            statusDiv.textContent = message;
-            
-            var container = document.getElementById(containerId);
-            if (container) {
-                var existingStatus = container.querySelector('.status');
-                if (existingStatus) {
-                    existingStatus.remove();
-                }
-                container.insertBefore(statusDiv, container.firstChild);
-                
-                setTimeout(function() {
-                    if (statusDiv.parentNode) {
-                        statusDiv.remove();
-                    }
-                }, 5000);
-            }
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to disconnect from Salesforce?')) {
-                accessToken = '';
-                instanceUrl = '';
-                accounts = [];
-                
-                document.getElementById('authSection').classList.remove('hidden');
-                document.getElementById('appSection').classList.add('hidden');
-                
-                window.location.hash = '';
-                showStatus('Successfully disconnected from Salesforce', 'success', 'authStatus');
-            }
+            console.log(logEntry);
         }
     </script>
 </body>
